@@ -71,6 +71,11 @@ Ensure the Orient package is available in your VMD installation. Utilize the fol
     # Save the aligned structure
     set sel [atomselect top "all"]
     $sel writepdb <PDB_code>_clean_H_ori.pdb 
+    
+    # Save the geom center of the structure in the geom_center.dat file
+    set file [open "geom_center.dat" w]
+    puts $file [ geom_center $sel ] 
+    close $file
     quit
 
 Save the script as align.tcl (or a name of your choice).
