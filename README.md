@@ -33,7 +33,7 @@ Create a directory named after the PDB code:
 This ensures that PDB-related files are stored in the NaVCh_ScalingAnalysis directory instead of hydroscale. To exeplify, we use here the 3rvy PDB code corresponding to a prototype bacterial NaVCh, namely, the NaVAb protein molecule captured at a pre-open state (https://www.wwpdb.org/pdb?id=pdb_00003rvy)
 
 Step 4. To proceed with the full analysis cycle, you will need to perform the following procedures: 
-- "Clean" the PDB file (remove waters, toxins, HETATM, etc ..)
+- "Clean" the PDB file (remove waters, toxins, HETATM, and other non-standard atoms)
 - Protonate the structure (add hydrogens)
 - Align the principal pore axis of the structure with the z-axis
 
@@ -160,7 +160,7 @@ This step ensures the results are neatly stored in a dedicated directory and rem
 
 # Single Voltage-gated Sodium Channel Protein Molecule Scaling Analysis
 
-Now we are prepared to execute our main function locally, i.e., within the `3rvy` directory.
+Now we are prepared to execute the 'main_scaling.py' function locally, i.e., within the `3rvy` directory.
 Run the main_scaling.py script:
 
 	"""
@@ -217,4 +217,65 @@ Once the program has exit, the following files have appeared in the `3rvy` direc
 	3rvy_Preparation_Report.txt
 
 These files contain all relevant information.
+
+# Single Voltage-gated Sodium Channel Protein Molecule Mutational Robustness Analysis
+
+We execute our main function locally, i.e., within the `3rvy` directory.
+Run the main_scaling.py script:
+
+	"""
+	This is your main function for Scaling Analysis.
+ 
+ 	It essentially orchestrates and executes all necessary tasks locally. 
+	It assumes you are working within the <PDB_code> directory and utilizes imported methods to process the data.
+	"""
+
+	import os
+
+	# Get the PDB code from the current directory name
+	pdb_code = os.getcwd()[-4:]
+	print("\n\n.. Starting working with molecule:", pdb_code, "found in: \n", os.getcwd())
+	
+	import sys
+
+	# Add the hydroscale directory to the system path for module imports
+	sys.path.insert(1, '/home/xxx/hydroscale')
+
+	import time
+	import Methods
+
+	# Record the start time for performance measurement
+	start_time = time.time()
+
+	# Call the sequence of methods required for the analysis
+	Methods.HOLEOutputAnalysis()       # Analyze the output of HOLE
+	Methods.PDBStructurePreperation()  # Prepare the PDB structure
+	Methods.CollectObservables()       # Collect observables for the analysis
+	Methods.InformationProfile()       # Generate the information profile
+
+	# Display the elapsed time for the full process
+	print("--- %s seconds ---" % (time.time() - start_time))
+
+	# Exit the program
+	exit()
+
+
+Once the program has exit, the following files have appeared in the `3rvy` directory:
+
+	3rvy_atomProbs.txt
+	3rvy_dists.txt
+	3rvy_entropies.txt
+	3rvy_exponentsDomains.txt
+	3rvy_hydrMoments.txt
+	3rvy_mol.txt
+	3rvy_nrOfAtoms.txt
+	3rvy_resProbs.txt
+	3rvy_scales.txt
+	3rvy_statMod.txt
+	3rvy_SummaryInfo.txt
+	3rvy_topologies.txt
+	3rvy_Preparation_Report.txt
+
+These files contain all relevant information.
+
 
