@@ -160,8 +160,7 @@ This step ensures the results are neatly stored in a dedicated directory and rem
 
 # Single Voltage-gated Sodium Channel Protein Molecule Scaling Analysis
 
-Now we are prepared to execute the `main_scaling.py` function locally, i.e., within the `3rvy` directory.
-Run the main_scaling.py script:
+Now we are prepared to execute the `main_scaling.py` function locally, i.e., within the `3rvy` directory:
 
 	"""
 	This is your main function for Scaling Analysis.
@@ -220,8 +219,7 @@ These files contain all relevant information.
 
 # Single Voltage-gated Sodium Channel Protein Molecule Mutational Robustness Analysis
 
-We execute our main function locally, i.e., within the `3rvy` directory.
-Run the main_scaling.py script:
+Now we are prepared to execute the `main_mutRobust.py` function locally, i.e., within the `7w9k` directory. Note that 
 
 	"""
 	This is your main function for Scaling Analysis.
