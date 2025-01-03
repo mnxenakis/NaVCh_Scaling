@@ -162,7 +162,7 @@ Step 7. Finally, we organize the generated data. In the current subdirectory, we
 
 This step ensures the results are neatly stored in a dedicated directory and removes unnecessary temporary files, leaving the workspace organized and ready for further analysis.
 
-# Single Molecule Scaling Analysis
+# Single Voltage-gated Sodium Channel Protein Molecule Scaling Analysis
 
 Now we are prepared to execute our main function locally, i.e., within the `<PDB_code>` directory.
 Run the main_scaling.py script:
