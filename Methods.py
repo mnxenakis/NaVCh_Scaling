@@ -57,11 +57,12 @@ def HOLEOutputAnalysis():
 	'''
 			Step 2. Collect the data
 	'''
+	subdir = PDB + "_prad" 
 	for i in range(ModelParameters.N_RUNS_HOLE):
 			
 		## Load data
-		porePoints = np.loadtxt('{}_{}.dat'.format('pp', i))
-		poreRadius = np.loadtxt('{}_{}.dat'.format('ppr', i))
+		porePoints = np.loadtxt(f'{subdir}/pp_{i}.dat')
+		poreRadius = np.loadtxt(f'{subdir}/ppr_{i}.dat')
 		
 		## Introduce global origin at geomCenter
 		porePoints = porePoints - geomCenter
