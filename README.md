@@ -219,10 +219,14 @@ These files contain all relevant information.
 
 # Single Voltage-gated Sodium Channel Protein Molecule Mutational Robustness Analysis
 
-Now we are prepared to execute the `main_mutRobust.py` function locally, i.e., within the `7w9k` directory. Note that 
+We focus on human NaVCh molecules because mutations in these channels are linked to various diseases, known as channelopathies. Specifically, we are interested in mutations related to pain disorders that affect the human NaV1.7 channel. To exeplify, we use here the 7w9k PDB code corresponding to a human NaV1.7 protein molecule captured at a potentially inactivated state (https://www.wwpdb.org/pdb?id=pdb_00003rvy)6												7
+
+Our fundamental assumption is that the scaling properties of the atomic environment along the principal pore axis encode information about the robustness of a structural location (i.e., residue geometric center) to mutation-induced perturbations. Similar to how the behavior of a self-organized critical system is determined by its critical scaling exponents. 
+
+We execute the `main_mutRobust.py` function locally, i.e., within the `7w9k` directory. Note that 
 
 	"""
-	This is your main function for Scaling Analysis.
+	This is your main function for Mutational Robustness Analysis.
  
  	It essentially orchestrates and executes all necessary tasks locally. 
 	It assumes you are working within the <PDB_code> directory and utilizes imported methods to process the data.
