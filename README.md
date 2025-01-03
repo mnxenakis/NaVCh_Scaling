@@ -29,10 +29,25 @@ mkdir -p ~/NaVCh_ScalingAnalysis/<PDB_code>
 
 Replace <PDB_code> with the actual code of the .pdb file. For instance:
 
-    mkdir -p ~/NaVCh_ScalingAnalysis/1ABC
+    mkdir -p ~/NaVCh_ScalingAnalysis/3rvy
+    
+This ensures that PDB-related files are stored in the NaVCh_ScalingAnalysis directory instead of hydroscale. Note that 3rvy is the pdb code corresponding to the prototype bacterial NaVCh, namely, the NaVAb protein molecule, captured at a pre-open state (https://www.wwpdb.org/pdb?id=pdb_00003rvy)
 
-This ensures that PDB-related files are stored in the NaVCh_ScalingAnalysis directory instead of hydroscale.
+Step 4. To proceed with the full analysis cycle, you will need to perform the following procedures: 
+- "Clean" the .pdb file (remove waters, toxins, HETATM, etc ..)
+- Protonate the structure (add hydrogens)
+- Align the principal pore axis of the structure with the z-axis
 
+Unfortunately, "cleaning" of the .pdb file cannot be fully automated. We chose to "clean" .pdb files in the yasara software.
+Protonation is performed by the reduce software. 
+
+For the NaVAb molecule, we use the command: 
+
+reduce -noadj 3rvy_clean.pdb > 3rvy_clean_H.pdb
+
+For any other molecule, we use the command:
+
+reduce -BUILD -NOHETh "$subdir"_clean.pdb > "$subdir"_clean_H.pdb 
 
 
 
