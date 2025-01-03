@@ -40,15 +40,25 @@ Step 4. To proceed with the full analysis cycle, you will need to perform the fo
 
 Unfortunately, "cleaning" of the .pdb file cannot be fully automated. We chose to "clean" .pdb files in the yasara software (https://www.yasara.org/).
 
-Protonation is performed by the reduce software (https://github.com/rlabduke/reduce). 
+Protonation of the "clean" structure is performed by the reduce software (https://github.com/rlabduke/reduce). 
 
-For the NaVAb molecule, we use the reduce command: 
+For the 3rvy molecule, we use the reduce command: 
 
     reduce -noadj 3rvy_clean.pdb > 3rvy_clean_H.pdb
 
-For any other molecule, we use the command:
+For any other molecule, we use the reduce command:
 
-    reduce -BUILD -NOHETh "$subdir"_clean.pdb > "$subdir"_clean_H.pdb 
+    reduce -BUILD -NOHETh <PDB_code>_clean.pdb > <PDB_code>_clean_H.pdb 
+
+To align the principal pore axis of the structure with the z-axis we use the VMD software (https://www.ks.uiuc.edu/Research/vmd/).
+Specifically, we utilize the following .tcl script:
+    
+    package require Orient 
+    namespace import Orient::orient
+    set sel [atomselect top "all"]
+    set I [draw principalaxes $sel]
+    set A [orient $sel [lindex $I 2] {0 0 1}]
+
 
 
 
