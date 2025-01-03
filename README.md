@@ -1,4 +1,6 @@
-# NaVCh_Scaling
+# Voltage-gated Sodium Channel Proten Molecule Scaling and Mutational Robustness Analysis
+
+# 1. Preparation
 
 Welcome to the voltage-gated sodium channels (NaVChs) scaling analysis project!
 
