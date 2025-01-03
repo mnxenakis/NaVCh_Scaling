@@ -160,7 +160,7 @@ This step ensures the results are neatly stored in a dedicated directory and rem
 
 # Single Voltage-gated Sodium Channel Protein Molecule Scaling Analysis
 
-Now we are prepared to execute the 'main_scaling.py' function locally, i.e., within the `3rvy` directory.
+Now we are prepared to execute the `main_scaling.py` function locally, i.e., within the `3rvy` directory.
 Run the main_scaling.py script:
 
 	"""
