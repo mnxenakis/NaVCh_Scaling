@@ -53,21 +53,25 @@ For any other molecule, we use the reduce command:
 To align the principal pore axis of the structure with the z-axis we use the VMD software (https://www.ks.uiuc.edu/Research/vmd/).
 Specifically, we utilize the following .tcl script:
     
+    package require Orient
+    namespace import Orient::orient
+
     # Load the cleaned and protonated .pdb file
     mol load pdb "$subdir"_clean_H.pdb
 
-    # Calculate the principal axis of the selected atoms (e.g., protein backbone)
-    set sel [atomselect top "protein"]
-    set eigvec [measure inertia [\$sel get {x y z}]]
+    # Select all atoms
+    set sel [atomselect top "all"]
 
-    # Align the principal axis with the z-axis
-    set zaxis {0 0 1}
-    set rotation_matrix [transvec \$eigvec \$zaxis]
-    \$sel move \$rotation_matrix
+    # Calculate the principal axes
+    set I [draw principalaxes $sel]
 
+    # Align the principal axis to the z-axis
+    set A [orient $sel [lindex $I 2] {0 0 1}]
+    
     # Save the aligned structure
-    \$sel writepdb "$subdir"_aligned.pdb
+    $sel writepdb "$subdir"_aligned.pdb
     quit
+
 
 
 
