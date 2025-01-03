@@ -51,13 +51,13 @@ For any other molecule, we use the reduce command:
     reduce -BUILD -NOHETh <PDB_code>_clean.pdb > <PDB_code>_clean_H.pdb 
 
 To align the principal pore axis of the structure with the z-axis we use the VMD software (https://www.ks.uiuc.edu/Research/vmd/).
-Specifically, we utilize the following .tcl script:
+Ensure the Orient package is available in your VMD installation. Utilize the following .tcl script:
     
     package require Orient
     namespace import Orient::orient
 
     # Load the cleaned and protonated .pdb file
-    mol load pdb "$subdir"_clean_H.pdb
+    mol load pdb <PDB_code>_clean_H.pdb
 
     # Select all atoms
     set sel [atomselect top "all"]
@@ -69,8 +69,14 @@ Specifically, we utilize the following .tcl script:
     set A [orient $sel [lindex $I 2] {0 0 1}]
     
     # Save the aligned structure
-    $sel writepdb "$subdir"_aligned.pdb
+    set sel [atomselect top "all"]
+    $sel writepdb <PDB_code>_clean_H_ori.pdb 
     quit
+
+Save the script as align.tcl (or a name of your choice).
+Run it in VMD with the following command:
+
+    vmd -dispdev text <PDB_code>_clean_H.pdb < align.tcl
 
 
 
