@@ -132,7 +132,11 @@ We call the HOLE rountine $N_{HOLE} = 50$ times. We use the following script to 
     # Return to the original directory
     cd -
 
-Step 6. We re-enumerate residue entires in the .pdb file. Adjusting the residue numbering in the .pdb file ensures they are sequential and consistent.
+Step 6. We renumber the residue entries in the `.pdb` file, ensuring they follow a sequential and consistent order. This is done by utilizing the pdb tool (http://www.bonvinlab.org/pdb-tools/) command:
+
+    pdb_reres -1 <PDB_code>_clean_H_ori.pdb > <PDB_code>_clean_H_ori_renum.pdb 
+
+
 
 
 
