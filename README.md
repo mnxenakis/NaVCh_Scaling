@@ -79,9 +79,9 @@ Run it in VMD with the following command:
     vmd -dispdev text <PDB_code>_clean_H.pdb < align.tcl
 
 Step 5. Navigate through the NaVCh pore environment. We use the HOLE software (https://www.holeprogram.org/).
-We call the HOLE rountine $N_{HOLE} = 50$ times:
+We call the HOLE rountine $N_{HOLE} = 50$ times. We use the following script to change the HOLE seed and extract pore radius results:
 
-    n=50 				# nr of runs
+    n=50 			# nr of runs (N_HOLE = 50)
     seed=1000 			# initial seed
     incr_seed=1000 		# seed increment
 
