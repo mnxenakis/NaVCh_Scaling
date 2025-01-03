@@ -159,8 +159,34 @@ Step 7. Finally, we organize the generated data. In the current subdirectory, we
 
 This step ensures the results are neatly stored in a dedicated directory and removes unnecessary temporary files, leaving the workspace organized and ready for further analysis.
 
+Step 8. Now we are prepared to execute our main function locally, i.e., within the `<PDB_code>` directory.
 
+    """
 
+		This is your main function. It basically calls (locally) whatever you need. 
+	
+    """
+    import os
+    pdb_code = os.getcwd()[-4:]
+    print("\n \n .. Starting working with molecule:", pdb_code, "found in: \n", os.getcwd())
+    import sys
+    sys.path.insert(1, '/home/markos/hydroscale')
+
+    import time
+    import Methods
+
+    start_time = time.time()
+ 
+    Methods.HOLEOutputAnalysis()
+    Methods.PDBStructurePreperation()
+    Methods.CollectObservables()
+    Methods.InsertVariants()
+    Methods.PrepareFeatures()
+    
+    Methods.InformationProfile()
+
+    print("--- %s seconds ---" % (time.time() - start_time))
+    exit()
 
 
 
