@@ -28,11 +28,7 @@ Step 3. Download a .pdb file (Protein Data Bank file) of interest.
 
 Create a directory named after the PDB code inside a separate directory called work, not in the hydroscale directory:
 
-mkdir -p ~/NaVCh_ScalingAnalysis/<PDB_code>
-
-Replace <PDB_code> with the actual code of the .pdb file. For instance:
-
-    mkdir -p ~/NaVCh_ScalingAnalysis/3rvy
+    	mkdir -p ~/NaVCh_ScalingAnalysis/3rvy
     
 This ensures that PDB-related files are stored in the NaVCh_ScalingAnalysis directory instead of hydroscale. Note that 3rvy is the pdb code corresponding to the prototype bacterial NaVCh, namely, the NaVAb protein molecule, captured at a pre-open state (https://www.wwpdb.org/pdb?id=pdb_00003rvy)
 
