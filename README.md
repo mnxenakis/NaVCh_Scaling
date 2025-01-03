@@ -38,16 +38,17 @@ Step 4. To proceed with the full analysis cycle, you will need to perform the fo
 - Protonate the structure (add hydrogens)
 - Align the principal pore axis of the structure with the z-axis
 
-Unfortunately, "cleaning" of the .pdb file cannot be fully automated. We chose to "clean" .pdb files in the yasara software.
-Protonation is performed by the reduce software. 
+Unfortunately, "cleaning" of the .pdb file cannot be fully automated. We chose to "clean" .pdb files in the yasara software (https://www.yasara.org/).
 
-For the NaVAb molecule, we use the command: 
+Protonation is performed by the reduce software (https://github.com/rlabduke/reduce). 
 
-reduce -noadj 3rvy_clean.pdb > 3rvy_clean_H.pdb
+For the NaVAb molecule, we use the reduce command: 
+
+    reduce -noadj 3rvy_clean.pdb > 3rvy_clean_H.pdb
 
 For any other molecule, we use the command:
 
-reduce -BUILD -NOHETh "$subdir"_clean.pdb > "$subdir"_clean_H.pdb 
+    reduce -BUILD -NOHETh "$subdir"_clean.pdb > "$subdir"_clean_H.pdb 
 
 
 
