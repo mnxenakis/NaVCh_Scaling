@@ -194,8 +194,6 @@ Run the main_scaling.py script:
 	Methods.HOLEOutputAnalysis()       # Analyze the output of HOLE
 	Methods.PDBStructurePreperation()  # Prepare the PDB structure
 	Methods.CollectObservables()       # Collect observables for the analysis
-	Methods.InsertVariants()           # Insert variants into the structure or data
-	Methods.PrepareFeatures()          # Prepare features for further processing
 	Methods.InformationProfile()       # Generate the information profile
 
 	# Display the elapsed time for the full process
