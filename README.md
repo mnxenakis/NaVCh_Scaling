@@ -73,6 +73,7 @@ Ensure the Orient package is available in your VMD installation. Utilize the fol
     $sel writepdb <PDB_code>_clean_H_ori.pdb 
     
     # Save the geom center of the structure in the geom_center.dat file
+    # We need the mol center of the clean, protonated, and oriented structure to initiate the HOLE routine
     set file [open "geom_center.dat" w]
     puts $file [ geom_center $sel ] 
     close $file
