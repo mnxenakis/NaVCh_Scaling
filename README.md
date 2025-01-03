@@ -219,65 +219,9 @@ These files contain all relevant information.
 
 # Single Voltage-gated Sodium Channel Protein Molecule Mutational Robustness Analysis
 
-We focus on human NaVCh molecules because mutations in these channels are linked to various diseases, known as channelopathies. Specifically, we are interested in mutations related to pain disorders that affect the human NaV1.7 channel. To exeplify, we use here the 7w9k PDB code corresponding to a human NaV1.7 protein molecule captured at a potentially inactivated state (https://www.wwpdb.org/pdb?id=pdb_00003rvy)6												7
+We focus on human NaVCh molecules because mutations in these channels are linked to various diseases, known as channelopathies. Specifically, we are interested in mutations related to pain disorders that affect the human NaV1.7 channel. To exeplify, we use here the 7w9k PDB code corresponding to a human NaV1.7 protein molecule captured at a potentially inactivated state (https://www.rcsb.org/structure/7W9K).												
 
 Our fundamental assumption is that the scaling properties of the atomic environment along the principal pore axis encode information about the robustness of a structural location (i.e., residue geometric center) to mutation-induced perturbations. Similar to how the behavior of a self-organized critical system is determined by its critical scaling exponents. 
 
-We execute the `main_mutRobust.py` function locally, i.e., within the `7w9k` directory. Note that 
-
-	"""
-	This is your main function for Mutational Robustness Analysis.
- 
- 	It essentially orchestrates and executes all necessary tasks locally. 
-	It assumes you are working within the <PDB_code> directory and utilizes imported methods to process the data.
-	"""
-
-	import os
-
-	# Get the PDB code from the current directory name
-	pdb_code = os.getcwd()[-4:]
-	print("\n\n.. Starting working with molecule:", pdb_code, "found in: \n", os.getcwd())
-	
-	import sys
-
-	# Add the hydroscale directory to the system path for module imports
-	sys.path.insert(1, '/home/xxx/hydroscale')
-
-	import time
-	import Methods
-
-	# Record the start time for performance measurement
-	start_time = time.time()
-
-	# Call the sequence of methods required for the analysis
-	Methods.HOLEOutputAnalysis()       # Analyze the output of HOLE
-	Methods.PDBStructurePreperation()  # Prepare the PDB structure
-	Methods.CollectObservables()       # Collect observables for the analysis
-	Methods.InformationProfile()       # Generate the information profile
-
-	# Display the elapsed time for the full process
-	print("--- %s seconds ---" % (time.time() - start_time))
-
-	# Exit the program
-	exit()
-
-
-Once the program has exit, the following files have appeared in the `3rvy` directory:
-
-	3rvy_atomProbs.txt
-	3rvy_dists.txt
-	3rvy_entropies.txt
-	3rvy_exponentsDomains.txt
-	3rvy_hydrMoments.txt
-	3rvy_mol.txt
-	3rvy_nrOfAtoms.txt
-	3rvy_resProbs.txt
-	3rvy_scales.txt
-	3rvy_statMod.txt
-	3rvy_SummaryInfo.txt
-	3rvy_topologies.txt
-	3rvy_Preparation_Report.txt
-
-These files contain all relevant information.
 
 
