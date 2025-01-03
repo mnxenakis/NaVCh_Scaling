@@ -81,41 +81,57 @@ Run it in VMD with the following command:
 Step 5. Navigate through the NaVCh pore environment. We use the HOLE software (https://www.holeprogram.org/).
 We call the HOLE rountine $N_{HOLE} = 50$ times. We use the following script to change the HOLE seed and extract pore radius results:
 
-    n=50 			# nr of runs (N_HOLE = 50)
-    seed=1000 			# initial seed
-    incr_seed=1000 		# seed increment
+#!/bin/bash
 
-    for (( i=0 ; i<$n ; i++ )); 
-	
-    do
+# Number of runs (e.g., N_HOLE = 50)
+n=50             
+# Initial seed value
+seed=1000        
+# Seed increment between runs
+incr_seed=1000   
 
-    echo calling hole .. for the $i-th time with seed $seed which will be incremented to $((seed+incr_seed))
-    echo "run hole"
-    hole < hole.inp > hole_out.txt # run hole
+# Loop for the number of runs
+for (( i=0; i<$n; i++ )); do
 
+    # Print message about the current run and seed
+    echo "Calling HOLE for the $i-th time with seed $seed, which will be incremented to $((seed+incr_seed))"
+    
+    # Run HOLE program and save output to hole_out.txt
+    echo "Run HOLE"
+    hole < hole.inp > hole_out.txt 
+
+    # Insert space between numbers in the output for easier parsing
     printf "%s\n" "${string}" | sed 's/-/ -/g' hole_out.txt > hole_out_spaced.txt
 
+    # Extract lines containing "mid-" or "sampled" and save to poreRadius.tsv
     egrep "mid-|sampled" hole_out_spaced.txt > poreRadius.tsv 
 
-    cat poreRadius.tsv|awk '{print $1,$2}' > ppr_$i.dat 
+    # Format the poreRadius.tsv file and save it to ppr_$i.dat
+    cat poreRadius.tsv | awk '{print $1,$2}' > ppr_$i.dat 
 
+    # Extract the highest radius point found and save to porePoints.dat
     sed -n '/ highest radius point found:/{n;p;}' hole_out_spaced.txt > porePoints.dat
 
+    # Clean up the porePoints.dat file by removing the first two columns and save it as pp_$i.dat
     awk '{ $1=""; $2=""; print $0}' porePoints.dat > pp_$i.dat 
 
+    # Remove the temporary porePoints.dat file
     rm porePoints.dat
 
-    sed -i 's/RASEED '$seed'/RASEED '$((seed+incr_seed))'/g' hole.inp # replace current seed with its increment 
+    # Update the seed in hole.inp by replacing the old seed with the incremented seed
+    sed -i 's/RASEED '$seed'/RASEED '$((seed+incr_seed))'/g' hole.inp
 
-    ((seed=seed+incr_seed)) # increment
+    # Increment the seed for the next run
+    ((seed=seed+incr_seed))
 
-    done
+done
 
-    sed -i 's/RASEED '$seed'/RASEED '1000'/g' hole.inp # remember to re-set the seed after you are done!
+# After all runs, reset the seed in hole.inp back to the initial value (1000)
+sed -i 's/RASEED '$seed'/RASEED '1000'/g' hole.inp
 
-    cd -
+# Return to the original directory
+cd -
 
-    done
 
 
 
