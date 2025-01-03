@@ -1,6 +1,6 @@
 # Voltage-gated Sodium Channel Proten Molecule Scaling and Mutational Robustness Analysis
 
-# 1. Preparation
+# Preparation
 
 Welcome to the voltage-gated sodium channels (NaVChs) scaling analysis project!
 
@@ -161,34 +161,49 @@ Step 7. Finally, we organize the generated data. In the current subdirectory, we
 
 This step ensures the results are neatly stored in a dedicated directory and removes unnecessary temporary files, leaving the workspace organized and ready for further analysis.
 
-Step 8. Now we are prepared to execute our main function locally, i.e., within the `<PDB_code>` directory.
+# Scaling Analysis
 
-    """
+Now we are prepared to execute our main function locally, i.e., within the `<PDB_code>` directory.
+Run the main_scaling.py script:
 
-		This is your main function. It basically calls (locally) whatever you need. 
-	
-    """
-    import os
-    pdb_code = os.getcwd()[-4:]
-    print("\n \n .. Starting working with molecule:", pdb_code, "found in: \n", os.getcwd())
-    import sys
-    sys.path.insert(1, '/home/markos/hydroscale')
-
-    import time
-    import Methods
-
-    start_time = time.time()
+	"""
+	This is your main function for Scaling Analysis.
  
-    Methods.HOLEOutputAnalysis()
-    Methods.PDBStructurePreperation()
-    Methods.CollectObservables()
-    Methods.InsertVariants()
-    Methods.PrepareFeatures()
-    
-    Methods.InformationProfile()
+ 	It essentially orchestrates and executes all necessary tasks locally. 
+	It assumes you are working within the <PDB_code> directory and utilizes imported methods to process the data.
+	"""
 
-    print("--- %s seconds ---" % (time.time() - start_time))
-    exit()
+	import os
+
+	# Get the PDB code from the current directory name
+	pdb_code = os.getcwd()[-4:]
+	print("\n\n.. Starting working with molecule:", pdb_code, "found in: \n", os.getcwd())
+	
+	import sys
+
+	# Add the hydroscale directory to the system path for module imports
+	sys.path.insert(1, '/home/markos/hydroscale')
+
+	import time
+	import Methods
+
+	# Record the start time for performance measurement
+	start_time = time.time()
+
+	# Call the sequence of methods required for the analysis
+	Methods.HOLEOutputAnalysis()       # Analyze the output of HOLE
+	Methods.PDBStructurePreperation()  # Prepare the PDB structure
+	Methods.CollectObservables()       # Collect observables for the analysis
+	Methods.InsertVariants()           # Insert variants into the structure or data
+	Methods.PrepareFeatures()          # Prepare features for further processing
+	Methods.InformationProfile()       # Generate the information profile
+
+	# Display the elapsed time for the full process
+	print("--- %s seconds ---" % (time.time() - start_time))
+
+	# Exit the program
+	exit()
+
 
 
 
