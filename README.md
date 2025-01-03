@@ -21,6 +21,18 @@ mv Methods.py ModelParameters.py Tools.py reduce.rad ~/hydroscale/
 
 Replace mv with cp if you want to copy the files instead of moving them.
 
+Step 3. Download a .pdb file (Protein Data Bank file) of interest. For example, you can download it from the RCSB PDB website. The pdb file encodes atomic coordinates of a NaVCh protein molecule.
+
+Create a directory named after the PDB code inside a separate directory called work, not in the hydroscale directory:
+
+mkdir -p ~/NaVCh_ScalingAnalysis/<PDB_code>
+
+Replace <PDB_code> with the actual code of the .pdb file. For instance:
+
+    mkdir -p ~/NaVCh_ScalingAnalysis/1ABC
+
+This ensures that PDB-related files are stored in the NaVCh_ScalingAnalysis directory instead of hydroscale.
+
 
 
 
