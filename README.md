@@ -161,7 +161,7 @@ Step 7. Finally, we organize the generated data. In the current subdirectory, we
 
 This step ensures the results are neatly stored in a dedicated directory and removes unnecessary temporary files, leaving the workspace organized and ready for further analysis.
 
-# Scaling Analysis
+# Single Molecule Scaling Analysis
 
 Now we are prepared to execute our main function locally, i.e., within the `<PDB_code>` directory.
 Run the main_scaling.py script:
@@ -182,7 +182,7 @@ Run the main_scaling.py script:
 	import sys
 
 	# Add the hydroscale directory to the system path for module imports
-	sys.path.insert(1, '/home/markos/hydroscale')
+	sys.path.insert(1, '/home/xxx/hydroscale')
 
 	import time
 	import Methods
@@ -203,5 +203,21 @@ Run the main_scaling.py script:
 	exit()
 
 
+Once the program has exit, the following files have appeared in the <PDB_code> directory:
 
+	<PDB_code>_atomProbs.txt
+	<PDB_code>_dists.txt
+	<PDB_code>_entropies.txt
+	<PDB_code>_exponentsDomains.txt
+	<PDB_code>_hydrMoments.txt
+	<PDB_code>_mol.txt
+	<PDB_code>_nrOfAtoms.txt
+	<PDB_code>_resProbs.txt
+	<PDB_code>_scales.txt
+	<PDB_code>_statMod.txt
+	<PDB_code>_SummaryInfo.txt
+	<PDB_code>_topologies.txt
+	<PDB_code>_Preparation_Report.txt
+
+These files contain all relevant information.
 
