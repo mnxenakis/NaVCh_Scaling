@@ -78,6 +78,45 @@ Run it in VMD with the following command:
 
     vmd -dispdev text <PDB_code>_clean_H.pdb < align.tcl
 
+Step 5. Navigate through the NaVCh pore environment. We use the HOLE software (https://www.holeprogram.org/).
+We call the HOLE rountine $N_{HOLE} = 50$ times:
+
+    n=50 				# nr of runs
+    seed=1000 			# initial seed
+    incr_seed=1000 		# seed increment
+
+    for (( i=0 ; i<$n ; i++ )); 
+	
+    do
+
+    echo calling hole .. for the $i-th time with seed $seed which will be incremented to $((seed+incr_seed))
+    echo "run hole"
+    hole < hole.inp > hole_out.txt # run hole
+
+    printf "%s\n" "${string}" | sed 's/-/ -/g' hole_out.txt > hole_out_spaced.txt
+
+    egrep "mid-|sampled" hole_out_spaced.txt > poreRadius.tsv 
+
+    cat poreRadius.tsv|awk '{print $1,$2}' > ppr_$i.dat 
+
+    sed -n '/ highest radius point found:/{n;p;}' hole_out_spaced.txt > porePoints.dat
+
+    awk '{ $1=""; $2=""; print $0}' porePoints.dat > pp_$i.dat 
+
+    rm porePoints.dat
+
+    sed -i 's/RASEED '$seed'/RASEED '$((seed+incr_seed))'/g' hole.inp # replace current seed with its increment 
+
+    ((seed=seed+incr_seed)) # increment
+
+    done
+
+    sed -i 's/RASEED '$seed'/RASEED '1000'/g' hole.inp # remember to re-set the seed after you are done!
+
+    cd -
+
+    done
+
 
 
 
