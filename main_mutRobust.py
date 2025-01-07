@@ -14,7 +14,7 @@ pdb_code = os.getcwd()[-4:]
 print("\n \n .. Starting working with molecule:", pdb_code, "found in: \n", os.getcwd())
 
 import sys
-sys.path.insert(1, '/home/markos/hydroscale')
+sys.path.insert(1, '/home/xxx/hydroscale')
 
 import numpy as np
 
@@ -120,10 +120,10 @@ Methods.PorePointLearning(features_phi_evenOrder, pathogenic, control, learnings
 featLabels_even =  ["$\phi_{0}$", "$\phi_{2}$", "$\phi_{4}$", "$\phi_{6}$", "$\phi_{8}$", "$\phi_{10}$"]
 Methods.Plot_Learnings(learnings_phi_evenOrder, featLabels_even)
 
-learnings_I_evenOrder = ['learnings_I_evenOrder']
-Methods.PorePointLearning(features_derPhi_evenOrder, pathogenic, control, learnings_I_evenOrder, method = 'SVC', kernel = ModelParameters.KERNEL_NONLINEAR)
+learnings_derPhi_evenOrder = ['learnings_derPhi_evenOrder']
+Methods.PorePointLearning(features_derPhi_evenOrder, pathogenic, control, learnings_derPhi_evenOrder, method = 'SVC', kernel = ModelParameters.KERNEL_NONLINEAR)
 featLabels_even =  ["$\mathcal{I}_{0}$", "$\mathcal{I}_{2}$", "$\mathcal{I}_{4}$", "$\mathcal{I}_{6}$", "$\mathcal{I}_{8}$", "$\mathcal{I}_{10}$"]
-Methods.Plot_Learnings(learnings_I_evenOrder, featLabels_even)
+Methods.Plot_Learnings(learnings_derPhi_evenOrder, featLabels_even)
 
 
 learnings_absDerPhi_evenOrder = ['learnings_absDerPhi_evenOrder']
@@ -149,10 +149,10 @@ Methods.PorePointLearning(features_phi_oddOrder, pathogenic, control, learnings_
 featLabels_odd =  ["$\phi_{1,\perp}$", "$\phi_{3,\perp}$", "$\phi_{5,\perp}$", "$\phi_{7,\perp}$", "$\phi_{9,\perp}$", "$\phi_{11,\perp}$"]
 Methods.Plot_Learnings(learnings_phi_oddOrder, featLabels_odd)
 
-learnings_I_oddOrder = ['learnings_I_oddOrder']
-Methods.PorePointLearning(features_derPhi_oddOrder, pathogenic, control, learnings_I_oddOrder, method = 'SVC', kernel = ModelParameters.KERNEL_NONLINEAR)
+learnings_derPhi_oddOrder = ['learnings_derPhi_oddOrder']
+Methods.PorePointLearning(features_derPhi_oddOrder, pathogenic, control, learnings_derPhi_oddOrder, method = 'SVC', kernel = ModelParameters.KERNEL_NONLINEAR)
 featLabels_odd =  ["$\mathcal{I}_{1,\perp}$", "$\mathcal{I}_{3,\perp}$", "$\mathcal{I}_{5,\perp}$", "$\mathcal{I}_{7,\perp}$", "$\mathcal{I}_{9,\perp}$", "$\mathcal{I}_{11,\perp}$"]
-Methods.Plot_Learnings(learnings_I_oddOrder, featLabels_odd)
+Methods.Plot_Learnings(learnings_derPhi_oddOrder, featLabels_odd)
 
 learnings_absDerPhi_oddOrder = ['learnings_absDerPhi_oddOrder']
 Methods.PorePointLearning(features_absDerPhi_oddOrder, pathogenic, control, learnings_absDerPhi_oddOrder, method = 'SVC', kernel = ModelParameters.KERNEL_NONLINEAR)
