@@ -215,7 +215,7 @@ Once the program has exit, the following files have appeared in the `3rvy` direc
 	3rvy_topologies.txt
 	3rvy_Preparation_Report.txt
 
-These files contain all relevant information.
+These files contain all relevant information and may be used for further analysis.
 
 # Single Voltage-gated Sodium Channel Protein Molecule Mutational Robustness Analysis
 
