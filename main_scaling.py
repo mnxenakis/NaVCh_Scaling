@@ -1,8 +1,10 @@
 """
-This is your main function for Scaling Analysis.
 
-It essentially orchestrates and executes all necessary tasks locally. 
-It assumes you are working within the <PDB_code> directory and utilizes imported methods to process the data.
+  This is your main function for Scaling Analysis.
+
+  It essentially orchestrates and executes all necessary tasks locally. 
+  It assumes you are working within the <PDB_code> directory and utilizes imported methods to process the data.
+
 """
 
 import os
