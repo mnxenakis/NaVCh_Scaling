@@ -221,5 +221,7 @@ We focus on human NaVCh molecules because mutations in these channels are linked
 
 Our fundamental assumption is that the scaling properties of the atomic environment along the principal pore axis encode information about the robustness of a structural location (i.e., residue geometric center) to mutation-induced perturbations. Similar to how the behavior of a self-organized critical system is determined by its critical scaling exponents. 
 
+Now we are prepared to execute the `main_mutRobust.py` function locally, i.e., within the `7w9k` directory:
+
 
 
