@@ -6,11 +6,11 @@ Welcome to the voltage-gated sodium channels (NaVChs) scaling analysis project!
 
 \textit{Step 1} To begin, create a directory in your home directory by executing the following command in a terminal:
 
-mkdir ~/hydroscale
+	mkdir ~/hydroscale
 
 This creates the directory /home/xxx/hydroscale, where xxx is your username.
 
-\textit{Step 2} Place the following files in the newly created hydroscale directory:
+Step 2. Place the following files in the newly created hydroscale directory:
 
     Methods.py
     Tools.py
@@ -22,9 +22,7 @@ You can use the mv or cp command to move or copy these files into /home/xxx/hydr
 
 	mv Methods.py ModelParameters.py KapchaRosskyScale.py Tools.py reduce.rad ~/hydroscale/
 
-
-
-\textit{Step 3} Download a PDB file (Protein Data Bank file) of interest. 
+Step 3. Download a PDB file (Protein Data Bank file) of interest. 
 
 Create a directory named after the PDB code: 
 
@@ -32,7 +30,7 @@ Create a directory named after the PDB code:
     
 This ensures that PDB-related files are stored in the NaVCh_ScalingAnalysis directory instead of hydroscale. To exeplify, we use here the 3rvy PDB code corresponding to a prototype bacterial NaVCh, namely, the NaVAb protein molecule captured at a pre-open state (https://www.wwpdb.org/pdb?id=pdb_00003rvy)
 
-\textit{Step 4} To proceed with the full analysis cycle, you will need to perform the following procedures: 
+Step 4. To proceed with the full analysis cycle, you will need to perform the following procedures: 
 - "Clean" the PDB file (remove waters, toxins, HETATM, and other non-standard atoms)
 - Protonate the structure (add hydrogens)
 - Align the principal pore axis of the structure with the z-axis
@@ -83,11 +81,11 @@ Run it in VMD with the following command:
 
     vmd -dispdev text 3rvy_clean_H.pdb < align.tcl
 
-\textit{Step 5} We renumber the residue entries in the PDB file, ensuring they follow a sequential and consistent order. This is done by utilizing the pdb tool (http://www.bonvinlab.org/pdb-tools/) command:
+Step 5. We renumber the residue entries in the PDB file, ensuring they follow a sequential and consistent order. This is done by utilizing the pdb tool (http://www.bonvinlab.org/pdb-tools/) command:
 
     pdb_reres -1 3rvy_clean_H_ori.pdb > 3rvy_clean_H_ori_renum.pdb 
 
-\textit{Step 6} Navigate through the NaVCh pore environment. We use the HOLE software (https://www.holeprogram.org/).
+Step 6. Navigate through the NaVCh pore environment. We use the HOLE software (https://www.holeprogram.org/).
 We call the HOLE rountine $N_{\text{HOLE}} = 50$ times. We use the following script to change the HOLE seed and extract pore radius results:
 
     #!/bin/bash
@@ -141,7 +139,7 @@ We call the HOLE rountine $N_{\text{HOLE}} = 50$ times. We use the following scr
     # Return to the original directory
     cd -
 
-\textit{Step 7} Finally, we organize the generated data. In the current subdirectory, we execute the following commands:
+Step 7. Finally, we organize the generated data. In the current subdirectory, we execute the following commands:
 
     # Create a directory to save results
     mkdir 3rvy_prad 
