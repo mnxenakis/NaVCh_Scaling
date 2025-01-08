@@ -221,6 +221,11 @@ Note that executing:
 
 plots interesting scaling NaVCh characteristics such as the cumulative atom number, the hydropathic dipole field, and the atomic hydropathic energy.
 
+# Voltage-gated sodimum Channel Protein Molecule Statistical Summary
+
+Executing `main_summary.py` function locally, i.e., within a `<SUBTYPE/SPECIES>` directory, summarizes information found in <PDB>_SummaryInfo.txt files. This helps in revealing statistically significant self-organized critical molecular signatures.
+
+
 # Single Voltage-gated Sodium Channel Protein Molecule Mutational Robustness Analysis
 
 We focus on human NaVCh molecules because mutations in these channels are linked to various diseases, known as channelopathies. Specifically, we are interested in mutations related to pain disorders that affect the human NaV1.7 channel. To exeplify, we use here the 7w9k PDB code corresponding to a human NaV1.7 protein molecule captured at a potentially inactivated state (https://www.rcsb.org/structure/7W9K).												
