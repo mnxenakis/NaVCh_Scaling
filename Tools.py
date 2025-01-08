@@ -4,20 +4,16 @@ from scipy import stats
 from uncertainties import ufloat
 
 from uncertainties.umath import *
-# from scipy.stats import kstest
 from scipy.signal import savgol_filter
-import os
-import sys
 
-sys.path.insert(1, '/home/mxwbio/hydroscale')
+import os
+PDB = os.getcwd()[-4:]
 
 import ModelParameters
 import math
 from scipy.interpolate import splrep, BSpline
 from scipy.stats import gamma
 from scipy.stats import norm
-
-import statistics
 
 from matplotlib.pyplot import rc
 rc('font', **{'family': 'serif', 'serif': ['Computer Modern'], 'size':16})
@@ -32,11 +28,6 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import roc_curve, f1_score
 
 from scipy.stats import gaussian_kde
-
-
-# pdb code
-PDB = os.getcwd()[-4:]
-
 
 '''
 		Cumulative atom number modeling
@@ -1626,7 +1617,7 @@ def Plot_DipoleMoment(data_z_pos, data_z_ES, data_z_neg, data_z_IS, min_inds_l_i
 	x = np.linspace(-2, 8, 1000)
 	bin_centers = 0.5 * (bins_PD[1:] + bins_PD[:-1])
 	p = norm.pdf(x, mu, std) * np.mean(np.diff(bin_centers)) * count_PD.sum()
-	ax.plot(x, 1.4*p, 'm--', linewidth=5, label = 'Norm.-distr.', alpha = 0.5)
+	ax.plot(x, p, 'm--', linewidth=5, label = 'Norm.-distr.', alpha = 0.5)
 	
 
 	# VSD hist (all)
@@ -1934,10 +1925,10 @@ def Plot_FeatureStatistic(princ_coord, data_class_0, data_class_1, poreRad, pore
 	plt.show()
 
 ##	Plot the medians of the medians of different features for different mutation subsets ##
-def Plot_MediansOfFeatureMedias(princ_coord, medians_subclasses, medians_class1, poreRad, poreRad_std, percentiles = [],  
-								medians_unseen = [], medians_missclass = [], 
+def Plot_MediansOfFeatureMedias(princ_coord, medians_subclasses, medians_class1, poreRad, poreRad_std, 
+								percentiles = [],  medians_unseen = [], medians_missclass = [], 
 								label_class1 = 'Neutr.', label_unseen1 = 'Benign', label_missclass = 'missclass.', 
-								y_label = 'Cluster inertia', SHOW_LEGENG = False):
+								y_label = 'Cluster inertia', SHOW_LEGENG = False, perp_coord_color = []):
 
 	# If you provide your own percentiles ..
 	if (len(percentiles) != 0):
@@ -1997,7 +1988,8 @@ def Plot_MediansOfFeatureMedias(princ_coord, medians_subclasses, medians_class1,
 	ax1.axhline(y = 0, color = 'k', alpha = 0.2, lw = 3)
 	ax1.axvline(x=-3, color = 'k', alpha = 0.2, lw = 3)
 
-	ax1.axvspan(-4.19, 18.2, color="y", alpha=0.3)
+	if (len(perp_coord_color) == 2):
+		ax1.axvspan(perp_coord_color[0], perp_coord_color[1], color="y", alpha=0.3)
 	
 	ax1.set_ylabel(y_label, fontsize = 50)
 	# ax1.set_ylim([y_lim_left, y_lim_right])

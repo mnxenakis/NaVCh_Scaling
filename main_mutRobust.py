@@ -7,23 +7,15 @@
 
 """
 
-import os
-
-pdb_code = os.getcwd()[-4:]
-
-print("\n \n .. Starting working with molecule:", pdb_code, "found in: \n", os.getcwd())
-
 import sys
 sys.path.insert(1, '/home/xxx/hydroscale')
 
-import numpy as np
+import os
+pdb_code = os.getcwd()[-4:]
+print("\n \n .. Starting working with molecule:", pdb_code, "found in: \n", os.getcwd())
 
-import time
 import Methods
 import ModelParameters
-
-
-start_time = time
 
 """
 		Insert variants
@@ -34,10 +26,9 @@ Methods.InsertVariants()
 		
         Assess mutational robustness:
        		
-            Generally, mutations are expected to cluster around \( \partial B_i \)
-        	Specifically, pathogenic events exploit local "weaknesses" to induge chagnes easily
+            Generally, mutations are expected to cluster somewhere around \( \partial B^{*} \) (where the entropy of the evolutionary tossing-coin game maximizes)
 
-       	 	Always consider two main classes: 
+       	 	Consider two main classes: 
         		-	pathogenic events (class 0)
             	-	control (non-path.) events (class 1)
                
@@ -51,7 +42,7 @@ missclassified = 'missclassified'
 """
 		Investigate the distribution of mutations inside the channel around \( \partial B_i \)
 """
-# Methods.MutationDistribution(["GoF/LoF", "All"])
+Methods.MutationDistribution(["GoF/LoF", "All"])
  
 """
 	Extract features:
@@ -59,6 +50,7 @@ missclassified = 'missclassified'
         - Consider orders of moments j = 0,1,2,..,(2*N_HYDR - 1).
         - Two groups, j = 2k and j = 2k + 1, corresponding to rotational and translational dynamics.
         - Obtain two main features: 
+
             (a), cluster's sensitivity to perturbations (denoted as \phi_{j})
             (b), cluster-shell's sensitivity to perturbations (i.e., interfacial coupling strength (denoted as \mathcal{I}_{j}))
                 
@@ -82,6 +74,7 @@ for j in range(2*ModelParameters.N_HYDR):
 even_contributions = [num for num in range(2*ModelParameters.N_HYDR) if num % 2 == 0]
 odd_contributions = [num for num in range(2*ModelParameters.N_HYDR) if num % 2 != 0 and num != 1] # exclude first-order contributions since they do not satisfy the Decomp Ansatz everywhere
 Methods.FeaturesSummary(even_contributions, odd_contributions, unseen = 'unseen', missclassified = 'missclassified') 
+Methods.FeaturesSummary([0], [1], unseen = 'unseen', missclassified = 'missclassified') 
 
 
 """
@@ -131,11 +124,6 @@ Methods.PorePointLearning(features_absDerPhi_evenOrder, pathogenic, control, lea
 featLabels_even =  ["$|\mathcal{I}_{0}|$", "$|\mathcal{I}_{2}|$", "$|\mathcal{I}_{4}|$", "$|\mathcal{I}_{6}|$", "$|\mathcal{I}_{8}|$", "$|\mathcal{I}_{10}|$"]
 Methods.Plot_Learnings(learnings_absDerPhi_evenOrder, featLabels_even)
 
-learnings_pertPot_evenOrder = ['learnings_pertPot_evenOrder']
-# Methods.PorePointLearning(features_pertPot_evenOrder, pathogenic, control, learnings_pertPot_evenOrder, method = 'SVC', kernel = ModelParameters.KERNEL_NONLINEAR)
-featLabels_even =  ["$\omega_{0}$", "$\omega_{2}$", "$\omega_{4}$", "$\omega_{6}$", "$\omega_{8}$", "$\omega_{10}$"]
-Methods.Plot_Learnings(learnings_pertPot_evenOrder, featLabels_even)
-
 # ##
 # ##	Odd contributions (j = 2k + 1): translational dynamical effects ##
 # ##
@@ -159,15 +147,41 @@ Methods.PorePointLearning(features_absDerPhi_oddOrder, pathogenic, control, lear
 featLabels_odd =  ["$|\mathcal{I}_{1,\perp}|$", "$|\mathcal{I}_{3,\perp}|$", "$|\mathcal{I}_{5,\perp}|$", "$|\mathcal{I}_{7,\perp}|$", "$|\mathcal{I}_{9,\perp}|$", "$|\mathcal{I}_{11,\perp}|$"]
 Methods.Plot_Learnings(learnings_absDerPhi_oddOrder, featLabels_odd)
 
-learnings_pertPot_oddOrder = ['learnings_pertPot_oddOrder']
-Methods.PorePointLearning(features_pertPot_oddOrder, pathogenic, control, learnings_pertPot_oddOrder, method = 'SVC', kernel = ModelParameters.KERNEL_NONLINEAR)
-featLabels_odd =  ["$\omega_{1,\perp}$", "$\omega_{3,\perp}$", "$\omega_{5,\perp}$", "$\omega_{7,\perp}$", "$\omega_{9,\perp}$", "$\omega_{11,\perp}$"]
-Methods.Plot_Learnings(learnings_pertPot_oddOrder, featLabels_odd)
-
-
 """
 		Ensemble (non-local) learning (acros pore points)
 """
+## Take directionality into account ..
+features_ensemble = [	
+						# even
+						'learnings_phi_evenOrder', 
+						'learnings_derPhi_evenOrder', 	
+						# odd
+						'learnings_phi_oddOrder', 
+						'learnings_derPhi_oddOrder',
+					]
+Methods.EnsembleLearning(features_ensemble, pathogenic, control, method = 'SVC', kernel = ModelParameters.KERNEL_NONLINEAR)
+## even
+features_ensemble = [	
+						# even
+						# 'learnings_phi_evenOrder', 
+						# 'learnings_derPhi_evenOrder', 	
+						# odd
+						'learnings_phi_oddOrder', 
+						'learnings_derPhi_oddOrder',
+					]
+Methods.EnsembleLearning(features_ensemble, pathogenic, control, method = 'SVC', kernel = ModelParameters.KERNEL_NONLINEAR)
+## odd
+features_ensemble = [	
+						# even
+						'learnings_phi_evenOrder', 
+						'learnings_derPhi_evenOrder', 	
+						# odd
+						# 'learnings_phi_oddOrder', 
+						# 'learnings_derPhi_oddOrder',
+					]
+Methods.EnsembleLearning(features_ensemble, pathogenic, control, method = 'SVC', kernel = ModelParameters.KERNEL_NONLINEAR)
+
+## Do not take directionality into account (unsigned features) ..
 features_ensemble = [	
 						# even
 						'learnings_absPhi_evenOrder', 
@@ -177,6 +191,27 @@ features_ensemble = [
 						'learnings_absDerPhi_oddOrder',
 					]
 Methods.EnsembleLearning(features_ensemble, pathogenic, control, method = 'SVC', kernel = ModelParameters.KERNEL_NONLINEAR)
+## even
+features_ensemble = [	
+						# even
+						# 'learnings_absPhi_evenOrder', 
+						# 'learnings_absDerPhi_evenOrder', 	
+						# odd
+						'learnings_absPhi_oddOrder', 
+						'learnings_absDerPhi_oddOrder',
+					]
+Methods.EnsembleLearning(features_ensemble, pathogenic, control, method = 'SVC', kernel = ModelParameters.KERNEL_NONLINEAR)
+## odd
+features_ensemble = [	
+						# even
+						'learnings_absPhi_evenOrder', 
+						'learnings_absDerPhi_evenOrder', 	
+						# odd
+						# 'learnings_absPhi_oddOrder', 
+						# 'learnings_absDerPhi_oddOrder',
+					]
+Methods.EnsembleLearning(features_ensemble, pathogenic, control, method = 'SVC', kernel = ModelParameters.KERNEL_NONLINEAR)
+
 
 
 	

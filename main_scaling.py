@@ -1,26 +1,24 @@
 """
 
-  This is your main function for Scaling Analysis.
+  	This is your main function for Scaling Analysis.
 
-  It essentially orchestrates and executes all necessary tasks locally. 
-  It assumes you are working within the <PDB_code> directory and utilizes imported methods to process the data.
+  	It essentially orchestrates and executes all necessary tasks locally. 
+  	It assumes you are working within the <PDB_code> directory and utilizes imported methods to process the data.
 
 """
 
-import os
+import sys
+# Add the hydroscale directory to the system path for module imports
+sys.path.insert(1, '/home/xxx/hydroscale')
 
+import os
 # Get the PDB code from the current directory name
 pdb_code = os.getcwd()[-4:]
 print("\n\n.. Starting working with molecule:", pdb_code, "found in: \n", os.getcwd())
 
-import sys
-
-# Add the hydroscale directory to the system path for module imports
-sys.path.insert(1, '/home/xxx/hydroscale')
-
-import time
 import Methods
 
+import time
 # Record the start time for performance measurement
 start_time = time.time()
 

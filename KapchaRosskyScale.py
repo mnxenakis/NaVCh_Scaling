@@ -1,9 +1,4 @@
-import numpy as np
 import pandas as pd
-from statistics import mode
-from matplotlib import *
-import matplotlib.pyplot as plt
-
 
 """
     An atomc level hydropathic scale (unweighted)
@@ -192,24 +187,22 @@ df = pd.DataFrame(hScale)
 
 
 """
-
 		Statistics of the atomc level hydropathic scale (unweighted)
-
-    
 """
-
-# scores = [] 
-# # .. Let's do some statistics .. for the sake of sanity check!
-# for res_name in df.columns:
-# 	print("\n Hydropathic profile of residue: ", res_name)
-# 	hydroChar = df[res_name].iloc[:].dropna()
-# 	hydroChar_ind = hydroChar.index[:]
-# 	hydroChar_val = hydroChar[:]
-# 	print(" Total hydropathic score: ", np.sum(hydroChar_val))
-# 	print(" Average hydropathic score: ", np.mean(hydroChar_val))
-# 	print(" Mode of hydropathic score: ", mode(hydroChar_val))
-# 	print(" Median of hydropathic score: ", np.median(hydroChar_val))
-# 	print(" Std of hydropathic score: ", np.std(hydroChar_val))
-# 	scores = np.append(scores, hydroChar_val)
-
-
+"""
+scores = [] 
+## .. Let's do some statistics .. for the sake of sanity check!
+import numpy as np
+from statistics import mode
+for res_name in df.columns:
+	print("\n Hydropathic profile of residue: ", res_name)
+	hydroChar = df[res_name].iloc[:].dropna()
+	hydroChar_ind = hydroChar.index[:]
+	hydroChar_val = hydroChar[:]
+	print(" Total hydropathic score: ", np.sum(hydroChar_val))
+	print(" Average hydropathic score: ", np.mean(hydroChar_val))
+	print(" Mode of hydropathic score: ", mode(hydroChar_val))
+	print(" Median of hydropathic score: ", np.median(hydroChar_val))
+	print(" Std of hydropathic score: ", np.std(hydroChar_val))
+	scores = np.append(scores, hydroChar_val)
+"""

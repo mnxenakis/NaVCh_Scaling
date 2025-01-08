@@ -1,29 +1,21 @@
 '''
-
 		A collection of useful Methods	
-
 '''
-from scipy import stats
 import os
 import glob
-import sys
 import KapchaRosskyScale
 import ModelParameters
 import Tools
-sys.path.insert(1, '/home/mxwbio/hydroscale')
 
-# Latex
 from matplotlib.pyplot import rc
 rc('font', **{'family': 'serif', 'serif': ['Computer Modern'], 'size':45})
 rc('text', usetex=True)
 
-# for computing
 import numpy as np
-# for plotting
 import matplotlib.pyplot as plt
 
 import math
-import statistics
+from scipy import stats
 import openpyxl
 import scipy.optimize
 
@@ -1238,7 +1230,7 @@ def MutationDistribution(mutationSubset, percenctInt = 25, PLOT_ENTROPY_LINE = F
 '''
 		Extract feature: calcualte mutated \phi value
 '''
-def FeaturesExtraction(classes, classes_unseen, missclassified, jth_order, percenctInt = 25, subClasses = [], VUS = False, PLOT = False, statMethod = "MEDIAN"):
+def FeaturesExtraction(classes, classes_unseen, missclassified, jth_order, percenctInt = 25, subClasses = [], VUS = False, PLOT = False, statMethod = "MEDIAN", perp_coord_plot = []):
 
 	## Get orientation	
 	mol_info_fn = glob.glob('*_molInfo.xlsx')[0]
@@ -1391,41 +1383,43 @@ def FeaturesExtraction(classes, classes_unseen, missclassified, jth_order, perce
 		l_mut = l_res[inds_mut]
 		phi_mut = Tools.Intrapolator(l, phi, l_mut)
 
-		if (pp[2] > 2.9 and pp[2] < 3.1):
-			
-			print(pp[2])
-			fig, ax = plt.subplots()
-			ax.set_title("$\mathrm{p}_{\perp}= 3.1$")
-			ax.plot(l_mut[inds_class0_], phi_mut[inds_class0_], "ro", label = "GoF$\cup$LoF")
-			ax.plot(l_mut[inds_class1_], phi_mut[inds_class1_], "bo", label = "Neutr.$\cup$Benign")
-			ax.plot(l, phi,"k", alpha = 0.5)
-			ax.axhline(y=0, color="k", alpha = 0.25, linestyle = "--", linewidth = 5)
-			ax.axvline(x = l_i[i], color = "k", linestyle = "--", linewidth = 5, alpha = 0.25)
-			ax.legend(loc="upper left", fontsize = 40)
-			ax.set_ylabel("$\phi_{1,\perp}$", fontsize = 55)
-			ax.set_xlabel("$l$ [\AA]", fontsize = 55)
-			ax.set_xticks([10, 20, 30, l_i[i], 50, 60, 70])
-			ax.set_xticklabels(["10", "20", "30", "$l_i$", "50", "60", "70"],  fontsize=40)
-			inset_ax = fig.add_axes([0.66, 0.58, 0.23, 0.25]) 
-			inset_ax.plot(l, h_plus/max(abs(h_plus)), label = "$h_{1,\perp,+}/\mathrm{max}\{|h_{1,\perp,+}|\}$", linewidth = 5)
-			inset_ax.plot(l, h_minus/max(abs(h_minus)), label = "$h_{1,\perp,-}/\mathrm{max}\{|h_{1,\perp,-}|\}$", linewidth = 5)
-			inset_ax.legend(loc="lower left", fontsize = 17)
-			inset_ax.set_ylabel("$h_{1,\perp,\pm}$ [kcal$\cdot$\AA]", fontsize = 30)
-			inset_ax.set_xlabel("$l$ [\AA]", fontsize = 30)
-			inset_ax.axvline(x = l_i[i], color = "k", linestyle = "--", linewidth = 5, alpha = 0.25)
-			inset_ax.axhline(y=0, color="k", alpha = 0.25, linestyle = "--", linewidth = 5)
-			inset_ax.set_xticks([10, 20, 30, l_i[i], 50, 60, 70])
-			inset_ax.set_xticklabels(["10", "20", "30", "$l_i$", "50", "60", "70"],  fontsize=30)
-			inset_ax.set_yticks([-1, 0, 1])
-			inset_ax.set_yticklabels(["-1", "0", "1"],  fontsize=30)
+		# Consider plotting something here
+		if (len(perp_coord_plot) == 2):
+			if (pp[2] > perp_coord_plot[0] and pp[2] < perp_coord_plot[1]):
+				
+				print(pp[2])
+				fig, ax = plt.subplots()
+				ax.set_title("$\mathrm{p}_{\perp}= 3.1$")
+				ax.plot(l_mut[inds_class0_], phi_mut[inds_class0_], "ro", label = "GoF$\cup$LoF")
+				ax.plot(l_mut[inds_class1_], phi_mut[inds_class1_], "bo", label = "Neutr.$\cup$Benign")
+				ax.plot(l, phi,"k", alpha = 0.5)
+				ax.axhline(y=0, color="k", alpha = 0.25, linestyle = "--", linewidth = 5)
+				ax.axvline(x = l_i[i], color = "k", linestyle = "--", linewidth = 5, alpha = 0.25)
+				ax.legend(loc="upper left", fontsize = 40)
+				ax.set_ylabel("$\phi_{1,\perp}$", fontsize = 55)
+				ax.set_xlabel("$l$ [\AA]", fontsize = 55)
+				ax.set_xticks([10, 20, 30, l_i[i], 50, 60, 70])
+				ax.set_xticklabels(["10", "20", "30", "$l_i$", "50", "60", "70"],  fontsize=40)
+				inset_ax = fig.add_axes([0.66, 0.58, 0.23, 0.25]) 
+				inset_ax.plot(l, h_plus/max(abs(h_plus)), label = "$h_{1,\perp,+}/\mathrm{max}\{|h_{1,\perp,+}|\}$", linewidth = 5)
+				inset_ax.plot(l, h_minus/max(abs(h_minus)), label = "$h_{1,\perp,-}/\mathrm{max}\{|h_{1,\perp,-}|\}$", linewidth = 5)
+				inset_ax.legend(loc="lower left", fontsize = 17)
+				inset_ax.set_ylabel("$h_{1,\perp,\pm}$ [kcal$\cdot$\AA]", fontsize = 30)
+				inset_ax.set_xlabel("$l$ [\AA]", fontsize = 30)
+				inset_ax.axvline(x = l_i[i], color = "k", linestyle = "--", linewidth = 5, alpha = 0.25)
+				inset_ax.axhline(y=0, color="k", alpha = 0.25, linestyle = "--", linewidth = 5)
+				inset_ax.set_xticks([10, 20, 30, l_i[i], 50, 60, 70])
+				inset_ax.set_xticklabels(["10", "20", "30", "$l_i$", "50", "60", "70"],  fontsize=30)
+				inset_ax.set_yticks([-1, 0, 1])
+				inset_ax.set_yticklabels(["-1", "0", "1"],  fontsize=30)
 
-			plt.show()
+				plt.show()
 
 		# Differtiate phi_mut - note that this essential step! How to differeniate while filtering out noise? 
 		# Alternatively, one could calculate the scaling exponents of h_plus, h_minus. 
 		# However, this approach does not yield high enough accuracy, since exponents are extracted from log-log diagrams,
 		# and, hence, oscillatory behavior of the derivative is lost. These oscillations convey important information 
-		# about the underlying wave packed.
+		# about the underlying wave packet.
 		# Higher order derivatiges of phi_mut are welcome. However, it is increasingly difficult to 
 		# compute a smooth, yet, informative derivative with increasing order.
 		slidingWindow = int( ModelParameters.WINDOW_FAC * Tools.GetSlidingWindow(a[i], nu[i], modType[i]) )
@@ -1485,15 +1479,14 @@ def FeaturesExtraction(classes, classes_unseen, missclassified, jth_order, perce
 		feature_pertPot.append(pertPot_mut)
 		feature_absPertPot.append(abs(pertPot_mut))
 		
-	# print(min(np.array(feature_phi).flatten().tolist()))	
-	# print(max(np.array(feature_phi).flatten().tolist()))	
-	# exit()
+	"""
 	plt.hist(np.array(feature_phi).flatten().tolist(), bins = 50, edgecolor = "b", alpha = 0.5, label = "$\phi_{1,\perp}$")
 	plt.hist(np.array(feature_derPhi).flatten().tolist(), bins = 50, edgecolor = "r", alpha = 0.5, label = "$\mathcal{I}_{1,\perp}$")
 	plt.legend(loc = "upper right", fontsize = 50)
-	plt.xlabel("$\phi_{1,\perp}$, $\mathcal{I}_{1,\perp}$", fontsize = 50)
+	plt.xlabel("$\phi_{\perp}$, $\mathcal{I}_{\perp}$", fontsize = 50)
 	plt.ylabel("Freq.",fontsize = 50)
 	plt.show()
+	"""
 
 	if (PLOT == True):
 		# phi	
@@ -1918,7 +1911,7 @@ def FeaturesSummary(even_order, odd_order, classes = 'classes', unseen = 'unseen
 					leftPerc_even_missclassified_phi, rightPerc_even_missclassified_phi]
 				
 	Tools.Plot_MediansOfFeatureMedias(princ_coord, [medians_even_subclassesA_phi, medians_even_subclassesB_phi], medians_even_class1_phi, mol['poreRadius_mean'], mol['poreRadius_std'], 
-								   		-0.2, 0.4, percentiles = percentiles, medians_unseen = medians_even_unseen1_phi, medians_missclass = medians_even_missclassified_phi, SHOW_LEGENG=True)
+								   	 	medians_unseen = medians_even_unseen1_phi, medians_missclass = medians_even_missclassified_phi, SHOW_LEGENG=True)
 	
 	##
 	## Phi plot (odd contributions) ##
@@ -1928,8 +1921,9 @@ def FeaturesSummary(even_order, odd_order, classes = 'classes', unseen = 'unseen
 					leftPerc_odd_class1_phi, rightPerc_odd_class1_phi,
 					leftPerc_odd_unseen1_phi, rightPerc_odd_unseen1_phi,
 					leftPerc_odd_missclassified_phi, rightPerc_odd_missclassified_phi]
+	
 	Tools.Plot_MediansOfFeatureMedias(princ_coord, [medians_odd_subclassesA_phi, medians_odd_subclassesB_phi], medians_odd_class1_phi, mol['poreRadius_mean'], mol['poreRadius_std'], 
-								   		-7, 7, percentiles = percentiles, medians_unseen = medians_odd_unseen1_phi, medians_missclass = medians_odd_missclassified_phi, y_label = 'Interfacial inertia $\mathbf{p}$' )  # y_label = 'Cluster conductivity')
+								   		medians_unseen = medians_odd_unseen1_phi, medians_missclass = medians_odd_missclassified_phi, y_label = 'Interfacial inertia $\mathbf{p}$' )  # y_label = 'Cluster conductivity')
 	
 
 	##
@@ -1940,8 +1934,9 @@ def FeaturesSummary(even_order, odd_order, classes = 'classes', unseen = 'unseen
 					leftPerc_even_class1_derPhi, rightPerc_even_class1_derPhi,
 					leftPerc_even_unseen1_derPhi, rightPerc_even_unseen1_derPhi,
 					leftPerc_even_missclassified_derPhi, rightPerc_even_missclassified_derPhi]
+	
 	Tools.Plot_MediansOfFeatureMedias(princ_coord, [medians_even_subclassesA_derPhi, medians_even_subclassesB_derPhi], medians_even_class1_derPhi, mol['poreRadius_mean'], mol['poreRadius_std'], 
-								   		-0.065, 0.06, percentiles=percentiles, medians_unseen = medians_even_unseen1_derPhi, medians_missclass = medians_even_missclassified_derPhi,  y_label = 'Interfacial inertia')
+								   	 	medians_unseen = medians_even_unseen1_derPhi, medians_missclass = medians_even_missclassified_derPhi,  y_label = 'Interfacial inertia')
 	
 	##
 	## derPhi plot (odd contributions) ##
@@ -1951,8 +1946,9 @@ def FeaturesSummary(even_order, odd_order, classes = 'classes', unseen = 'unseen
 					leftPerc_odd_class1_derPhi, rightPerc_odd_class1_derPhi,
 					leftPerc_odd_unseen1_derPhi, rightPerc_odd_unseen1_derPhi,
 					leftPerc_odd_missclassified_derPhi, rightPerc_odd_missclassified_derPhi]
+	
 	Tools.Plot_MediansOfFeatureMedias(princ_coord,  [medians_odd_subclassesA_derPhi, medians_odd_subclassesB_derPhi], medians_odd_class1_derPhi, mol['poreRadius_mean'], mol['poreRadius_std'], 
-								   		-1.0, 1.0, percentiles=percentiles, medians_unseen = medians_odd_unseen1_derPhi, medians_missclass = medians_odd_missclassified_derPhi, y_label = 'Interfacial conductivity')
+								   		medians_unseen = medians_odd_unseen1_derPhi, medians_missclass = medians_odd_missclassified_derPhi, y_label = 'Interfacial conductivity')
 
 
 '''
