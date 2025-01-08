@@ -1,4 +1,4 @@
-# Voltage-gated Sodium Channel Protein Molecule Scaling and Mutational Robustness Analysis
+# Voltage-gated Sodium Channel Protein Molecule Structure Renormalization and Mutational Robustness Analysis
 
 # Preparation
 
