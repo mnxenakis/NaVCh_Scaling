@@ -215,6 +215,12 @@ Once the program has exit, the following files have appeared in the `3rvy` direc
 
 These files contain all relevant information and may be used for further analysis.
 
+Note that executing:
+
+	Methods.InformationProfile(PLOT = True)       # Generate the information profile
+
+plots interesting scaling NaVCh characteristics such as the cumulative atom number, the hydropathic dipole field, and the atomic hydropathic energy.
+
 # Single Voltage-gated Sodium Channel Protein Molecule Mutational Robustness Analysis
 
 We focus on human NaVCh molecules because mutations in these channels are linked to various diseases, known as channelopathies. Specifically, we are interested in mutations related to pain disorders that affect the human NaV1.7 channel. To exeplify, we use here the 7w9k PDB code corresponding to a human NaV1.7 protein molecule captured at a potentially inactivated state (https://www.rcsb.org/structure/7W9K).												
