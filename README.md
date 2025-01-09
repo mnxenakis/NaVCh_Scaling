@@ -223,7 +223,7 @@ plots interesting scaling NaVCh characteristics such as the cumulative atom numb
 
 # Voltage-gated sodimum Channel Protein Molecule Statistical Summary
 
-Executing `main_summary.py` function locally, i.e., within a `<SUBTYPE/SPECIES>` directory, summarizes information found in `<SUBTYPE/SPECIES>`_SummaryInfo.txt files. This helps in revealing statistically significant self-organized critical molecular signatures.
+Executing `main_summary.py` function locally, i.e., within a `<SUBTYPE/SPECIES>` directory, summarizes information found in `<SUBTYPE/SPECIES>_SummaryInfo.txt` files. This helps in revealing statistically significant self-organized critical molecular signatures.
 
 
 # Single Voltage-gated Sodium Channel Protein Molecule Mutational Robustness Analysis
