@@ -234,7 +234,7 @@ We focus on human NaVCh molecules because mutations in these channels are linked
 
 Our fundamental assumption is that the scaling properties of the atomic environment along the principal pore axis encode information about the robustness of a structural location (i.e., residue geometric center) to mutation-induced perturbations. Similar to how the behavior of a self-organized critical system is determined by its critical scaling exponents. 
 
-Now we are prepared to execute the `main_mutRobust.py` function locally, i.e., within any of the three subdirs found in `Machine Learning Experiments/NaV17/7w9k_mutantAnalysis`. This call will generate a lot of data files. These files encode machine learning features used for classification of mutation hotspots.
+Now we are prepared to execute the `main_mutRobust.py` function locally, i.e., within any subdir found in `Machine Learning Experiments/NaV17/7w9k_mutantAnalysis`. This call will generate a lot of data files. These files encode machine learning features used for classification of mutation hotspots.
 
 # Data availability
 
