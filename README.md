@@ -240,4 +240,4 @@ Now we are prepared to execute the `main_mutRobust.py` function locally, i.e., w
 
 All the data generated to date can be accessed at https://doi.org/10.5281/zenodo.14617204 and https://doi.org/10.5281/zenodo.14628099, which include information on 71 NaVCh protein molecules of prokaryotic origin and 50 NaVCh protein molecules of eukaryotic origin, respectively.
 
-The structure of the datasets follows the same logic explaned here.
+The structure of the datasets adheres to the same directory organization described in this document.
