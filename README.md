@@ -18,7 +18,7 @@ Step 2. Place the following files in the newly created hydroscale directory:
     Tools.py 			# a collection of useful tools
     reduce.rad 			# vdW atomic radii (for the HOLE routine)
     ModelParameters.py 		# physical parameters and numerical constants
-    KapchaRosskyScale.py 	# the Kapcha & Rossky hydropathic scale [Kapcha LH & Rossky PJ. J Mol Biol. 426(2):484-98, 2014.]
+    KapchaRosskyScale.py 	# the Kapcha & Rossky hydropathic scale (Kapcha LH & Rossky PJ, J Mol Biol., 2014, 426(2):484-9)
 
 You can use the mv or cp command to move or copy these files into /home/xxx/hydroscale:
 
