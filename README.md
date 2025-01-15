@@ -213,7 +213,7 @@ Once the program has exit, the following files have appeared in the `3rvy` direc
 	3rvy_topologies.txt
 	3rvy_Preparation_Report.txt
 
-These files contain all relevant information and may be used for further analysis. They are available at \url{https://doi.org/10.5281/zenodo.14617204} and \url{https://doi.org/10.5281/zenodo.14628099} for a collection of 71 and 50 NaVCh protein molecules of prokaryotic and eukaryotic origin, respectively.
+These files contain all relevant information and may be used for further analysis. They are available at https://doi.org/10.5281/zenodo.14617204 and https://doi.org/10.5281/zenodo.14628099 for a collection of 71 and 50 NaVCh protein molecules of prokaryotic and eukaryotic origin, respectively.
 
 Note that executing:
 
