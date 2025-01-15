@@ -14,11 +14,11 @@ This creates the directory /home/xxx/hydroscale, where xxx is your username.
 
 Step 2. Place the following files in the newly created hydroscale directory:
 
-    Methods.py # a collection of useful methods
-    Tools.py # a collection of useful tools
-    reduce.rad # the vdW atomic radii (for the HOLE routine)
-    ModelParameters.py # physical parameters and numerical constants
-    KapchaRosskyScale.py # the Kapcha & Rossky hydropathic scale [Kapcha LH, Rossky PJ. A simple atomic-level hydrophobicity scale reveals protein interfacial structure. J Mol Biol. 2014 Jan 23;426(2):484-98. doi: 10.1016/j.jmb.2013.09.039. Epub 2013 Oct 10. PMID: 24120937.]
+    Methods.py 			# a collection of useful methods
+    Tools.py 			# a collection of useful tools
+    reduce.rad 			# vdW atomic radii (for the HOLE routine)
+    ModelParameters.py 		# physical parameters and numerical constants
+    KapchaRosskyScale.py 	# the Kapcha & Rossky hydropathic scale [Kapcha LH, Rossky PJ. A simple atomic-level hydrophobicity scale reveals protein interfacial structure. J Mol Biol. 2014 Jan 23;426(2):484-98. doi: 10.1016/j.jmb.2013.09.039. Epub 2013 Oct 10. PMID: 24120937.]
 
 You can use the mv or cp command to move or copy these files into /home/xxx/hydroscale:
 
