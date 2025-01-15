@@ -1,5 +1,9 @@
 # Voltage-gated Sodium Channel Protein Molecule Scaling and Mutational Robustness Analysis
 
+# Data availability
+
+All the data generated so far are available at https://doi.org/10.5281/zenodo.14617204 and https://doi.org/10.5281/zenodo.14628099, where the results from scaling analysis of 71 and 50 NaVCh protein molecules of prokaryotic and eukaryotic origin, respectively, can be found
+
 # Preperation
 
 Welcome to the voltage-gated sodium channels (NaVChs) scaling analysis project!
@@ -213,7 +217,7 @@ Once the program has exit, the following files have appeared in the `3rvy` direc
 	3rvy_topologies.txt
 	3rvy_Preparation_Report.txt
 
-These files contain all relevant information and may be used for further analysis. They are available at https://doi.org/10.5281/zenodo.14617204 and https://doi.org/10.5281/zenodo.14628099 for a collection of 71 and 50 NaVCh protein molecules of prokaryotic and eukaryotic origin, respectively.
+These files contain all relevant information and may be used for further analysis. 
 
 Note that executing:
 
@@ -223,7 +227,7 @@ plots interesting scaling NaVCh characteristics such as the cumulative atom numb
 
 # Voltage-gated sodimum Channel Protein Molecule Statistical Summary
 
-Executing `main_summary.py` function locally, i.e., within a `<SUBTYPE/SPECIES>` directory, summarizes information found in `<PDB>_SummaryInfo.txt` files. This helps in revealing statistically significant self-organized critical molecular signatures.
+Executing `main_summary.py` function locally, i.e., within a `<SUBTYPE/SPECIES>_summary` directory, summarizes information found in `<PDB>_SummaryInfo.txt` files. This helps in revealing statistically significant self-organized critical molecular signatures.
 
 
 # Single Voltage-gated Sodium Channel Protein Molecule Mutational Robustness Analysis
@@ -232,7 +236,7 @@ We focus on human NaVCh molecules because mutations in these channels are linked
 
 Our fundamental assumption is that the scaling properties of the atomic environment along the principal pore axis encode information about the robustness of a structural location (i.e., residue geometric center) to mutation-induced perturbations. Similar to how the behavior of a self-organized critical system is determined by its critical scaling exponents. 
 
-Now we are prepared to execute the `main_mutRobust.py` function locally, i.e., within the `7w9k` directory. This call will generate a lot of data files. These files encode machine learning features used for classification of mutation hotspots.
+Now we are prepared to execute the `main_mutRobust.py` function locally, i.e., within any of the three subdirs found in `Machine Learning Experiments/NaV17/7w9k_mutantAnalysis`. This call will generate a lot of data files. These files encode machine learning features used for classification of mutation hotspots.
 
 
 
