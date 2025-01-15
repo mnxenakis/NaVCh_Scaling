@@ -221,8 +221,6 @@ Note that executing:
 
 plots interesting scaling NaVCh characteristics such as the cumulative atom number, the hydropathic dipole field, and the atomic hydropathic energy.
 
-
-
 # Voltage-gated sodimum Channel Protein Molecule Statistical Summary
 
 Executing `main_summary.py` function locally, i.e., within a `<SUBTYPE/SPECIES>` directory, summarizes information found in `<PDB>_SummaryInfo.txt` files. This helps in revealing statistically significant self-organized critical molecular signatures.
