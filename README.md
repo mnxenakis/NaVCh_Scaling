@@ -1,14 +1,12 @@
 # Voltage-gated Sodium Channel Protein Molecule Scaling and Mutational Robustness Analysis
 
-# Data availability
 
-All the data generated so far are available at https://doi.org/10.5281/zenodo.14617204 and https://doi.org/10.5281/zenodo.14628099, where the results from scaling analysis of 71 and 50 NaVCh protein molecules of prokaryotic and eukaryotic origin, respectively, can be found
 
 # Preperation
 
 Welcome to the voltage-gated sodium channels (NaVChs) scaling analysis project!
 
-\textit{Step 1} To begin, create a directory in your home directory by executing the following command in a terminal:
+Step 1. To begin, create a directory in your home directory by executing the following command in a terminal:
 
 	mkdir ~/hydroscale
 
@@ -238,5 +236,8 @@ Our fundamental assumption is that the scaling properties of the atomic environm
 
 Now we are prepared to execute the `main_mutRobust.py` function locally, i.e., within any of the three subdirs found in `Machine Learning Experiments/NaV17/7w9k_mutantAnalysis`. This call will generate a lot of data files. These files encode machine learning features used for classification of mutation hotspots.
 
+# Data availability
 
+All the data generated to date can be accessed at https://doi.org/10.5281/zenodo.14617204 and https://doi.org/10.5281/zenodo.14628099, which include information on 71 NaVCh protein molecules of prokaryotic origin and 50 NaVCh protein molecules of eukaryotic origin, respectively.
 
+The structure of the datasets follows the same logic explaned here.
