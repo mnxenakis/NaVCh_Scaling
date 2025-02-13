@@ -1113,12 +1113,14 @@ def MutationDistribution(mutationSubset, percenctInt = 25, PLOT_ENTROPY_LINE = F
 	## Initialize
 	stats_dist_l_i = []
 	dists_l_i = []
+	dists_l_i_b = []
 	dists_l_half_model = []
 	dists_l_half_empirical = []
 	l_half_model = np.zeros(nrOfPps)
 	l_half_empirical = np.zeros(nrOfPps)
 	median_l_mut = np.zeros(nrOfPps)
 	mode_l_mut = np.zeros(nrOfPps)
+	l_i_b = np.zeros(nrOfPps)
 
 	for i in range(nrOfPps):
 
@@ -1133,25 +1135,29 @@ def MutationDistribution(mutationSubset, percenctInt = 25, PLOT_ENTROPY_LINE = F
 		# Define the coin tossing probability
 		# Model:
 		p_coin_model = n_model / (max(n_model)) 
+		l_i_b[i] = n_model / (A[i] * max(n_atoms))
 		p_coin_empirical = n_atoms / (max(n_atoms)) 
 		absDiff_model_half_model = abs(p_coin_model - 0.5)
 		absDiff_model_half_empirical = abs(p_coin_empirical - 0.5)
 		l_half_model[i] = l[np.where(absDiff_model_half_model == min(absDiff_model_half_model))[0][0]] 
 		l_half_empirical[i] = l[np.where(absDiff_model_half_empirical == min(absDiff_model_half_empirical))[0][0]] 
 		dist_l_i = l_res - l_i[i] 
+		dist_l_i_b = l_res - l_i_b[i] 
 		dist_l_half_model = l_res - l_half_model[i] 
 		dist_l_half_empirical = l_res - l_half_empirical[i] 
 		median_l_mut[i] = np.median(l_res[inds_mutations])
 		mode_l_mut[i] = Tools.Mode(l_res[inds_mutations])
 		stats_dist_l_i.append(Tools.StatsCalc(dist_l_i[inds_mutations], 0, percenctInt))
 		dists_l_i.append(dist_l_i[inds_mutations])
+		dists_l_i_b.append(dist_l_i_b[inds_mutations])
 		dists_l_half_model.append(dist_l_half_model[inds_mutations])
 		dists_l_half_empirical.append(dist_l_half_empirical[inds_mutations])
 
-	plt.plot(l_half_empirical, "g")
-	plt.plot(l_i, "m")
-	plt.plot(median_l_mut, "k")
-	plt.plot(mode_l_mut, "k--")
+	# plt.plot(l_half_empirical, "g")
+	# plt.plot(l_i, "m")
+	plt.plot(l_i_b, "m--")
+	# plt.plot(median_l_mut, "k")
+	# plt.plot(mode_l_mut, "k--")
 	plt.show()
 
 	import seaborn as sns
@@ -2217,7 +2223,7 @@ def EnsembleLearning(	features,
 	from sklearn.metrics import precision_recall_curve, f1_score
 
 	# Obtain optimal threshold (f1)
-	# Based on the median (aggregated) class_0 probabitlies! Note that this our glocal probability measure 
+	# Based on the median (aggregated) class_0 probabitlies! Note that this our global probability measure 
 	# Also, note that the ground truth is 1 - target
 	prob_class_0 = np.median(res[0], axis = 0) # the larger, the more likely to belong to class_0
 	# Perform bootstrapping
@@ -2452,20 +2458,20 @@ def CollectObservables():
 			nrOfAtoms.append([N, N_pho, N_phi])  
 			# Get the probabilities
 			# Note that sum(p_unnorm) is the partition sum: p = p_unnorm/sum(p_unnorm) = (n/K)/(sum(n)/K) = n/sum(n)
-			p_unnorm = Tools.GeomModel(l, [   _['K'] ,    _['zeta'] ,    _['l_i'] ,    _['nu'] ],    _["modType"] ) /  _['K'] 
-			p_pho_unnorm = Tools.GeomModel(l, [_pho['K'] , _pho['zeta'] , _pho['l_i'] , _pho['nu'] ], _pho["modType"] ) / _pho['K']
-			p_phi_unnorm = Tools.GeomModel(l, [_phi['K'] , _phi['zeta'] , _phi['l_i'] , _phi['nu'] ], _phi["modType"] ) / _phi['K']
+			p_unnorm = Tools.GeomModel(l, [   _['K'] ,    _['inv_zeta'] ,    _['l_i'] ,    _['nu'] ],    _["modType"] ) /  _['K'] 
+			p_pho_unnorm = Tools.GeomModel(l, [_pho['K'] , _pho['inv_zeta'] , _pho['l_i'] , _pho['nu'] ], _pho["modType"] ) / _pho['K']
+			p_phi_unnorm = Tools.GeomModel(l, [_phi['K'] , _phi['inv_zeta'] , _phi['l_i'] , _phi['nu'] ], _phi["modType"] ) / _phi['K']
 			# Radial order entropies
 			S = Tools.qEntropy(p_unnorm/sum(p_unnorm), _['nu'] + 1)
 			S_pho = Tools.qEntropy(p_pho_unnorm/sum(p_pho_unnorm), _pho['nu'] + 1)
 			S_phi = Tools.qEntropy(p_phi_unnorm/sum(p_phi_unnorm), _phi['nu'] + 1)
 			# Curvature (and corrsponding domains)
-			curvature = Tools.GeomModel(l, [_['K'] , _['zeta'] , _['l_i'] , _['nu'] ], _["modType"], 2) / _['K']
+			curvature = Tools.GeomModel(l, [_['K'] , _['inv_zeta'] , _['l_i'] , _['nu'] ], _["modType"], 2) / _['K']
 			ind_max_curv = Tools.Match(max(curvature), curvature)[0]
 			ind_min_curv = Tools.Match(min(curvature), curvature)[0]
 			# Cumulative probabilities (roughly determine the "phase" (i.e., PD vs VS) to which an atom belongs)
-			p_res = Tools.GeomModel(l_res,  [_['K'] , _['zeta'] , _['l_i'] , _['nu'] ], _["modType"] ) / _['K']
-			p_atom = Tools.GeomModel(l_atom, [_['K'] , _['zeta'] , _['l_i'] , _['nu'] ], _["modType"] ) / _['K']
+			p_res = Tools.GeomModel(l_res,  [_['K'] , _['inv_zeta'] , _['l_i'] , _['nu'] ], _["modType"] ) / _['K']
+			p_atom = Tools.GeomModel(l_atom, [_['K'] , _['inv_zeta'] , _['l_i'] , _['nu'] ], _["modType"] ) / _['K']
 		
 		else:
 			exit('\n .. Exiting smoothly .. Some atoms were NOT sampled! \n\n')

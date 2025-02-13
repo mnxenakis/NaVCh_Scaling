@@ -37,22 +37,22 @@ def ResidualsRichards(params, x, data, der = 0):
 	
 	# Get an ordered dictionary of parameter values
 	v = params.valuesdict()
-	phi = np.exp(-v['zeta']*v['nu']*(x - v['l_i']))
+	phi = np.exp(-v['inv_zeta']*v['nu']*(x - v['l_i']))
 	
 	# Richards model
 	if (der == 0):
 		model = v['K']*(1 + v['nu']*phi)**(-1/v['nu'])
 	if (der == 1):
-		model = v['K']*v['zeta']*v['nu']*phi*(v['nu']*phi + 1)**(-1./v['nu'] - 1)
+		model = v['K']*v['inv_zeta']*v['nu']*phi*(v['nu']*phi + 1)**(-1./v['nu'] - 1)
 	if (der == 2):
-		phi_inv = np.exp(v['zeta']*v['nu']*(x - v['l_i']))
-		model = -v['K'] * (v['zeta']**2) * (v['nu']**2) * (phi_inv - 1) / ( ((1 + v['nu']*phi)**(1/v['nu'])) * (v['nu'] + phi_inv)**2 )
+		phi_inv = np.exp(v['inv_zeta']*v['nu']*(x - v['l_i']))
+		model = -v['K'] * (v['inv_zeta']**2) * (v['nu']**2) * (phi_inv - 1) / ( ((1 + v['nu']*phi)**(1/v['nu'])) * (v['nu'] + phi_inv)**2 )
 	if (der == 'log0'):
-		phi_inv = np.exp(v['zeta']*v['nu']*(x - v['l_i']))  
-		model =  x*v['zeta']*v['nu'] / ( phi_inv + v['nu'] ) 
+		phi_inv = np.exp(v['inv_zeta']*v['nu']*(x - v['l_i']))  
+		model =  x*v['inv_zeta']*v['nu'] / ( phi_inv + v['nu'] ) 
 	if (der == 'log1'):
-		phi_inv = np.exp(v['zeta']*v['nu']*(x - v['l_i']))
-		model = -x*v['zeta']*v['nu'] * (phi_inv - 1) / ( phi_inv + v['nu'] )
+		phi_inv = np.exp(v['inv_zeta']*v['nu']*(x - v['l_i']))
+		model = -x*v['inv_zeta']*v['nu'] * (phi_inv - 1) / ( phi_inv + v['nu'] )
 	
 	# Return residuals
 	return model - data
@@ -62,21 +62,21 @@ def ResidualsLogistic(params, x, data, der = 0):
     
 	# Get an ordered dictionary of parameter values
 	v = params.valuesdict()
-	phi = np.exp(-v['zeta']*(x - v['l_i']))
+	phi = np.exp(-v['inv_zeta']*(x - v['l_i']))
 	
 	# Logistic model
 	if (der == 0):
 		model = v['K']*(1 + phi)**( -1 )
 	if (der == 1):
-		model = v['K']*v['zeta']*phi*(1 + phi)**(-2)
+		model = v['K']*v['inv_zeta']*phi*(1 + phi)**(-2)
 	if (der == 2):
 		phi_inv = 1/phi
-		model = - v['K']*(v['zeta']**2)*phi_inv*(phi_inv - 1) / (phi_inv + 1)**3
+		model = - v['K']*(v['inv_zeta']**2)*phi_inv*(phi_inv - 1) / (phi_inv + 1)**3
 	if (der == 'log0'):
 		phi_inv = 1/phi
-		model = x*v['zeta'] / ( phi_inv + 1 ) 
+		model = x*v['inv_zeta'] / ( phi_inv + 1 ) 
 	if (der == 'log1'):
-		model = x*v['zeta'] / ( ( np.exp(v['zeta']*v['l_i']) - np.exp(v['zeta']*x) ) /( np.exp(v['zeta']*v['l_i']) + np.exp(v['zeta']*x)) )
+		model = x*v['inv_zeta'] / ( ( np.exp(v['inv_zeta']*v['l_i']) - np.exp(v['inv_zeta']*x) ) /( np.exp(v['inv_zeta']*v['l_i']) + np.exp(v['inv_zeta']*x)) )
 	
 	# Return residuals
 	return model - data
@@ -86,19 +86,19 @@ def ResidualsGompertz(params, x, data, der=0):
     
 	# Get an ordered dictionary of parameter values
 	v = params.valuesdict()
-	phi = np.exp(-v['a_gomp']*(x - v['l_i']))
+	phi = np.exp(-v['inv_xi']*(x - v['l_i']))
 	
 	# Gompertz model
 	if (der == 0):
 		model = v['K']*np.exp(- phi) 
 	if (der == 1):
-		model = v['a_gomp']*v['K']*np.exp(- phi - v['a_gomp']*(x - v['l_i'])) 
+		model = v['inv_xi']*v['K']*np.exp(- phi - v['inv_xi']*(x - v['l_i'])) 
 	if (der == 2):
-		model = v['a_gomp']*v['K']*(v['a_gomp']*phi - v['a_gomp'])*np.exp(- phi - v['a_gomp']*(x - v['l_i'])) 
+		model = v['inv_xi']*v['K']*(v['inv_xi']*phi - v['inv_xi'])*np.exp(- phi - v['inv_xi']*(x - v['l_i'])) 
 	if (der == 'log0'):
-		model = x*v['a_gomp']*np.exp(v['a_gomp']*(v['l_i'] - x))
+		model = x*v['inv_xi']*np.exp(v['inv_xi']*(v['l_i'] - x))
 	if (der == 'log1'):
-		model = x*v['a_gomp']*(phi - 1)
+		model = x*v['inv_xi']*(phi - 1)
 		
 	# Return residuals
 	return model - data
@@ -125,15 +125,15 @@ def GeomModel(x, InputParams, modelType=1, der=0):
 	params.add('K', value = InputParams[0])
 	params.add('l_i', value = InputParams[2])
 	if (modelType == 1):
-		params.add('zeta', value = InputParams[1])
+		params.add('inv_zeta', value = InputParams[1])
 		params.add('nu', value = InputParams[3])
 		model = ResidualsRichards(params, x, np.zeros(len(x)), der)
 	if (modelType == 2):
-		params.add('zeta', value = InputParams[1])
+		params.add('inv_zeta', value = InputParams[1])
 		params.add('nu', value = InputParams[3])
 		model = ResidualsLogistic(params, x, np.zeros(len(x)), der)
 	if (modelType == 3):
-		params.add('a_gomp', value = InputParams[1])
+		params.add('inv_xi', value = InputParams[1])
 		model = ResidualsGompertz(params, x, np.zeros(len(x)), der)
 	
 	return model
@@ -149,18 +149,18 @@ def StatModelParameters(x, y):
 	# Init param
 	params_richards = Parameters()
 	params_richards.add('K', value = initParam_val[0][0], min = initParam_val[0][1], max = initParam_val[0][2])
-	params_richards.add('zeta', value = initParam_val[1][0], min = initParam_val[1][1], max = initParam_val[1][2])
+	params_richards.add('inv_zeta', value = initParam_val[1][0], min = initParam_val[1][1], max = initParam_val[1][2])
 	params_richards.add('l_i', value = initParam_val[2][0], min = initParam_val[2][1], max = initParam_val[2][2])
 	params_richards.add('nu', value = initParam_val[3][0], min = initParam_val[3][1], max = initParam_val[3][2])
 	
 	params_logistic = Parameters()
 	params_logistic.add('K', value = initParam_val[0][0], min = initParam_val[0][1], max = initParam_val[0][2])
-	params_logistic.add('zeta', value = initParam_val[1][0], min = initParam_val[1][1], max = initParam_val[1][2])
+	params_logistic.add('inv_zeta', value = initParam_val[1][0], min = initParam_val[1][1], max = initParam_val[1][2])
 	params_logistic.add('l_i', value = initParam_val[2][0], min = initParam_val[2][1], max = initParam_val[2][2])
 	
 	params_gompertz = Parameters()
 	params_gompertz.add('K',   value = initParam_val[0][0], min = initParam_val[0][1], max = initParam_val[0][2])
-	params_gompertz.add('a_gomp',   value = initParam_val[1][0], min = initParam_val[1][1], max = initParam_val[1][2])
+	params_gompertz.add('inv_xi',   value = initParam_val[1][0], min = initParam_val[1][1], max = initParam_val[1][2])
 	params_gompertz.add('l_i', value = initParam_val[2][0], min = initParam_val[2][1], max = initParam_val[2][2])
 	
 	# wrappers
@@ -186,7 +186,7 @@ def StatModelParameters(x, y):
 
 	# wrap up		# val									# unc
 	results.append([fit_richards.params['K'].value, 		fit_richards.params['K'].stderr, 		# A 					[0,1]
-					fit_richards.params['zeta'].value, 		fit_richards.params['zeta'].stderr, 		# a 					[2,3]
+					fit_richards.params['inv_zeta'].value, 		fit_richards.params['inv_zeta'].stderr, 		# a 					[2,3]
 					fit_richards.params['l_i'].value, 		fit_richards.params['l_i'].stderr,		# l_i 					[4,5]						
 					fit_richards.params['nu'].value, 		fit_richards.params['nu'].stderr,		# nu					[6,7]
 					add_params_ric[0],						add_params_ric[1], 						# mu					[8,9]
@@ -213,7 +213,7 @@ def StatModelParameters(x, y):
 	add_params_log 	= GeomModelDomains(fit_logistic.params, 2)
 	# wrap up		# val									# unc
 	results.append([fit_logistic.params['K'].value, 		fit_logistic.params['K'].stderr, 		# A 					[0,1]
-					fit_logistic.params['zeta'].value, 		fit_logistic.params['zeta'].stderr, 		# a 					[2,3]
+					fit_logistic.params['inv_zeta'].value, 		fit_logistic.params['inv_zeta'].stderr, 		# a 					[2,3]
 					fit_logistic.params['l_i'].value, 		fit_logistic.params['l_i'].stderr, 		# l_i 					[4,5]						
 					1.,										0,										# nu					[6,7]
 					add_params_log[0],						add_params_log[1], 						# mu					[8,9]
@@ -240,7 +240,7 @@ def StatModelParameters(x, y):
 	add_params_gomp = GeomModelDomains(fit_gompertz.params, 3)
 	# wrap up		# val									# unc
 	results.append([fit_gompertz.params['K'].value, 		fit_gompertz.params['K'].stderr, 		# A 					[0,1]
-					fit_gompertz.params['a_gomp'].value, 	fit_gompertz.params['a_gomp'].stderr, 	# a 					[2,3]
+					fit_gompertz.params['inv_xi'].value, 	fit_gompertz.params['inv_xi'].stderr, 	# a 					[2,3]
 					fit_gompertz.params['l_i'].value, 		fit_gompertz.params['l_i'].stderr, 		# l_i 					[4,5]						
 					ModelParameters.NU_MIN,					0,									    # nu					[6,7]
 					add_params_gomp[0],						add_params_gomp[1], 				    # mu					[8,9]
@@ -260,7 +260,7 @@ def StatModelParameters(x, y):
 	# Fill this dict with what you really need ..
 	_['K'] = results[ind_modSelect][0]
 	_['A_unc'] = results[ind_modSelect][1]
-	_['zeta'] = results[ind_modSelect][2]
+	_['inv_zeta'] = results[ind_modSelect][2]
 	_['a_unc'] = results[ind_modSelect][3]
 	_['l_i'] = results[ind_modSelect][4]
 	_['l_i_unc'] = results[ind_modSelect][5]
@@ -296,10 +296,10 @@ def GeomModelDomains(params, modType):
 	
 	if (modType != 3):
 		
-		if (params['zeta'].stderr != None):	
-			a_ = ufloat(params['zeta'].value, params['zeta'].stderr)
+		if (params['inv_zeta'].stderr != None):	
+			a_ = ufloat(params['inv_zeta'].value, params['inv_zeta'].stderr)
 		else:
-			a_ = ufloat(params['zeta'].value, 0)
+			a_ = ufloat(params['inv_zeta'].value, 0)
 		
 		if (modType == 1):
 			if (params['nu'].stderr != None):	
@@ -320,10 +320,10 @@ def GeomModelDomains(params, modType):
 	
 	else: 
 		
-		if (params['a_gomp'].stderr != None):	
-			a_gomp_ = ufloat(params['a_gomp'].value, params['a_gomp'].stderr)
+		if (params['inv_xi'].stderr != None):	
+			a_gomp_ = ufloat(params['inv_xi'].value, params['inv_xi'].stderr)
 		else:
-			a_gomp_ = ufloat(params['a_gomp'].value, 0)
+			a_gomp_ = ufloat(params['inv_xi'].value, 0)
 			
 		# Calc add vars
 		mu_ = (A_ * a_gomp_) / np.exp(1)
@@ -1288,6 +1288,46 @@ def Standarization(y, l_i, l):
 	ind_l_i = Match(l_i, l)
 	y_norm = y/y[ind_l_i]
 	return ( y_norm - min(y_norm) ) / ( max(y_norm) - min(y_norm) ) + min(abs(y_norm))
+
+## Calculate F1 Threshold via confusion_matrix ##
+def CalculateF1Threshold(y_true, prob_class_1, threshold):
+	
+	from sklearn.metrics import confusion_matrix
+	
+	y_pred = (prob_class_1 >= threshold).astype(int)
+	tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+    
+	precision = tp / (tp + fp) if (tp + fp) > 0 else 0
+	recall = tp / (tp + fn) if (tp + fn) > 0 else 0
+	f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+
+	return f1_score
+
+## Threshold Bootstraping ##
+def BootstrapThreshold(y_true, prob_class_1, n_iterations=1000):
+
+	from sklearn.utils import resample		
+
+	best_thresholds = []
+	f1_scores = []
+    
+	for _ in range(n_iterations):
+		
+		# Generate a bootstrap sample
+		X_resample, y_resample = resample(prob_class_1, y_true, random_state=None)
+        
+    	# Find the best threshold using the resampled data
+		thresholds = np.linspace(0, 1, 101)
+		f1_scores_iter = np.array([CalculateF1Threshold(y_resample, X_resample, threshold) for threshold in thresholds])
+        
+    	# Find the threshold with the maximum F1 score
+		best_threshold_index = np.argmax(f1_scores_iter)
+		best_threshold = thresholds[best_threshold_index]
+        
+		best_thresholds.append(best_threshold)
+		f1_scores.append(f1_scores_iter[best_threshold_index])
+    
+	return best_thresholds, f1_scores
 
 
 
