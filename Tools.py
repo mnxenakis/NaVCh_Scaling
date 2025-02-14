@@ -261,7 +261,7 @@ def StatModelParameters(x, y):
 	_['A'] = results[ind_modSelect][0]
 	_['A_unc'] = results[ind_modSelect][1]
 	_['inv_zeta'] = results[ind_modSelect][2]
-	_['zeta_unc'] = results[ind_modSelect][3]
+	_['inv_zeta_unc'] = results[ind_modSelect][3]
 	_['l_i'] = results[ind_modSelect][4]
 	_['l_i_unc'] = results[ind_modSelect][5]
 	_['nu'] = results[ind_modSelect][6]
