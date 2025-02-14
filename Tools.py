@@ -41,12 +41,12 @@ def ResidualsRichards(params, x, data, der = 0):
 	
 	# Richards model
 	if (der == 0):
-		model = v['K']*(1 + v['nu']*phi)**(-1/v['nu'])
+		model = v['A']*(1 + v['nu']*phi)**(-1/v['nu'])
 	if (der == 1):
-		model = v['K']*v['inv_zeta']*v['nu']*phi*(v['nu']*phi + 1)**(-1./v['nu'] - 1)
+		model = v['A']*v['inv_zeta']*v['nu']*phi*(v['nu']*phi + 1)**(-1./v['nu'] - 1)
 	if (der == 2):
 		phi_inv = np.exp(v['inv_zeta']*v['nu']*(x - v['l_i']))
-		model = -v['K'] * (v['inv_zeta']**2) * (v['nu']**2) * (phi_inv - 1) / ( ((1 + v['nu']*phi)**(1/v['nu'])) * (v['nu'] + phi_inv)**2 )
+		model = -v['A'] * (v['inv_zeta']**2) * (v['nu']**2) * (phi_inv - 1) / ( ((1 + v['nu']*phi)**(1/v['nu'])) * (v['nu'] + phi_inv)**2 )
 	if (der == 'log0'):
 		phi_inv = np.exp(v['inv_zeta']*v['nu']*(x - v['l_i']))  
 		model =  x*v['inv_zeta']*v['nu'] / ( phi_inv + v['nu'] ) 
@@ -66,12 +66,12 @@ def ResidualsLogistic(params, x, data, der = 0):
 	
 	# Logistic model
 	if (der == 0):
-		model = v['K']*(1 + phi)**( -1 )
+		model = v['A']*(1 + phi)**( -1 )
 	if (der == 1):
-		model = v['K']*v['inv_zeta']*phi*(1 + phi)**(-2)
+		model = v['A']*v['inv_zeta']*phi*(1 + phi)**(-2)
 	if (der == 2):
 		phi_inv = 1/phi
-		model = - v['K']*(v['inv_zeta']**2)*phi_inv*(phi_inv - 1) / (phi_inv + 1)**3
+		model = - v['A']*(v['inv_zeta']**2)*phi_inv*(phi_inv - 1) / (phi_inv + 1)**3
 	if (der == 'log0'):
 		phi_inv = 1/phi
 		model = x*v['inv_zeta'] / ( phi_inv + 1 ) 
@@ -90,11 +90,11 @@ def ResidualsGompertz(params, x, data, der=0):
 	
 	# Gompertz model
 	if (der == 0):
-		model = v['K']*np.exp(- phi) 
+		model = v['A']*np.exp(- phi) 
 	if (der == 1):
-		model = v['inv_xi']*v['K']*np.exp(- phi - v['inv_xi']*(x - v['l_i'])) 
+		model = v['inv_xi']*v['A']*np.exp(- phi - v['inv_xi']*(x - v['l_i'])) 
 	if (der == 2):
-		model = v['inv_xi']*v['K']*(v['inv_xi']*phi - v['inv_xi'])*np.exp(- phi - v['inv_xi']*(x - v['l_i'])) 
+		model = v['inv_xi']*v['A']*(v['inv_xi']*phi - v['inv_xi'])*np.exp(- phi - v['inv_xi']*(x - v['l_i'])) 
 	if (der == 'log0'):
 		model = x*v['inv_xi']*np.exp(v['inv_xi']*(v['l_i'] - x))
 	if (der == 'log1'):
@@ -185,8 +185,8 @@ def StatModelParameters(x, y):
 	add_params_ric 	= GeomModelDomains(fit_richards.params, 1)
 
 	# wrap up		# val									# unc
-	results.append([fit_richards.params['K'].value, 		fit_richards.params['K'].stderr, 		# A 					[0,1]
-					fit_richards.params['inv_zeta'].value, 		fit_richards.params['inv_zeta'].stderr, 		# a 					[2,3]
+	results.append([fit_richards.params['A'].value, 		fit_richards.params['A'].stderr, 		# A 					[0,1]
+					fit_richards.params['inv_zeta'].value, 		fit_richards.params['inv_zeta'].stderr, 		# inv_zeta 					[2,3]
 					fit_richards.params['l_i'].value, 		fit_richards.params['l_i'].stderr,		# l_i 					[4,5]						
 					fit_richards.params['nu'].value, 		fit_richards.params['nu'].stderr,		# nu					[6,7]
 					add_params_ric[0],						add_params_ric[1], 						# mu					[8,9]
@@ -212,7 +212,7 @@ def StatModelParameters(x, y):
 	# additional length-scale parameters
 	add_params_log 	= GeomModelDomains(fit_logistic.params, 2)
 	# wrap up		# val									# unc
-	results.append([fit_logistic.params['K'].value, 		fit_logistic.params['K'].stderr, 		# A 					[0,1]
+	results.append([fit_logistic.params['A'].value, 		fit_logistic.params['A'].stderr, 		# A 					[0,1]
 					fit_logistic.params['inv_zeta'].value, 		fit_logistic.params['inv_zeta'].stderr, 		# a 					[2,3]
 					fit_logistic.params['l_i'].value, 		fit_logistic.params['l_i'].stderr, 		# l_i 					[4,5]						
 					1.,										0,										# nu					[6,7]
@@ -239,7 +239,7 @@ def StatModelParameters(x, y):
 	# additional length-scale parameters
 	add_params_gomp = GeomModelDomains(fit_gompertz.params, 3)
 	# wrap up		# val									# unc
-	results.append([fit_gompertz.params['K'].value, 		fit_gompertz.params['K'].stderr, 		# A 					[0,1]
+	results.append([fit_gompertz.params['A'].value, 		fit_gompertz.params['A'].stderr, 		# A 					[0,1]
 					fit_gompertz.params['inv_xi'].value, 	fit_gompertz.params['inv_xi'].stderr, 	# a 					[2,3]
 					fit_gompertz.params['l_i'].value, 		fit_gompertz.params['l_i'].stderr, 		# l_i 					[4,5]						
 					ModelParameters.NU_MIN,					0,									    # nu					[6,7]
@@ -258,10 +258,10 @@ def StatModelParameters(x, y):
 
 	_ = {}
 	# Fill this dict with what you really need ..
-	_['K'] = results[ind_modSelect][0]
+	_['A'] = results[ind_modSelect][0]
 	_['A_unc'] = results[ind_modSelect][1]
 	_['inv_zeta'] = results[ind_modSelect][2]
-	_['a_unc'] = results[ind_modSelect][3]
+	_['zeta_unc'] = results[ind_modSelect][3]
 	_['l_i'] = results[ind_modSelect][4]
 	_['l_i_unc'] = results[ind_modSelect][5]
 	_['nu'] = results[ind_modSelect][6]
@@ -284,10 +284,10 @@ def StatModelParameters(x, y):
 def GeomModelDomains(params, modType):
 
 	
-	if (params['K'].stderr != None):	
-		A_ = ufloat(params['K'].value, params['K'].stderr)
+	if (params['A'].stderr != None):	
+		A_ = ufloat(params['A'].value, params['A'].stderr)
 	else:	
-		A_ = ufloat(params['K'].value, 0)
+		A_ = ufloat(params['A'].value, 0)
 		
 	if (params['l_i'].stderr != None):	
 		l_i_ = ufloat(params['l_i'].value, params['l_i'].stderr)
