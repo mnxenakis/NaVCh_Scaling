@@ -673,9 +673,10 @@ def ScalingInfo(array, orderOfhydrMom = 0, component = 'z', dataType =  'powerLa
 ## Decompose ##
 def Decompose(h_pho, h_phi, ind_l_cutOff):
 
-	# Successful decomposition: above the lag scale the sign does not change.
-	# The part before the l_lag is also considered, if singularties for l<l_lag are not dramatic
-	# In fact they are not expected to be, since we are dealing with first-order "jumps" over zero and not continuous zero-crossings.	
+	# Successful decomposition: above the cutoff scale the sign does not change.
+	# The part before the l_cutoff is also considered, if singularties for l < l_cutoff are not dramatic
+	# In fact they are not expected to be, since we are dealing with first-order "jumps" over zero and not continuous zero-crossings.
+	# Generally, even when l_cutoff becomes very small, the decomposition is succesful	
 	if (all(h_pho[ind_l_cutOff:ModelParameters.N_SCALES] < 0) and all(h_phi[ind_l_cutOff:ModelParameters.N_SCALES] > 0)):
 		h_plus = h_phi
 		h_minus = h_pho

@@ -1042,7 +1042,7 @@ def MutationDistribution(mutationSubset, percenctInt = 25, PLOT_ENTROPY_LINE = F
 	# Check how many times each amino acid from the first list appears in the second list
 	amino_acid_counts = {aa: count.get(aa, 0) for aa in res}
 	
-	# Hydropathic scores for each residue
+	# Hydropathic scores for each residue (Kapcha & Rossky scale)
 	hydropathic_scores = {
     "PHE": -4.0, "PRO": -3.0, "ILE": -3.5, "LEU": -3.5, "TRP": -3.0,
     "VAL": -2.0, "TYR": -1.5, "MET": -1.0, "ALA": 1.0, "THR": 2.0,
@@ -1373,13 +1373,11 @@ def FeaturesExtraction(classes, classes_unseen, missclassified, jth_order, perce
 		else:
 			h_pho = Tools.getHydrMom(hydrMoments, i, 'phobic', jth_order, "z") + ModelParameters.ZERO
 			h_phi = Tools.getHydrMom(hydrMoments, i, 'philic', jth_order, "z") + ModelParameters.ZERO
-	
-		# Some initial sphere could be empty (contain 0's) 
-		# Replace 0's with some small-ampliude water density fluctuation
-		h_pho[np.where(h_pho == 0)[0]] = np.random.normal(0, ModelParameters.STD_NOISE, 1)
-		h_phi[np.where(h_phi == 0)[0]] = np.random.normal(0, ModelParameters.STD_NOISE, 1)
 
 		# Check if h is decomposable 
+		# The cutoff scale is chosen to be the l-value for which the n-curavture is maximized
+		# This is quite relaxed criterion: a more strict criterion also works. 
+		# In fact, we can take l_cutoff to be *very* small.
 		h_plus, h_minus = Tools.Decompose(h_pho, h_phi, ind_max_curv)
 
 		# Define phi for increasing l (log of comp susc)
@@ -2066,14 +2064,11 @@ def PorePointLearning(features, class_0, class_1, fn_score, BALANCING = False, m
 		f1_train[i,:] = acc_auc_mean[4], acc_auc_std[4], acc_auc_median[4], acc_auc_percentile_l[4], acc_auc_percentile_r[4]
 		f1_test[i,:] = acc_auc_mean[5], acc_auc_std[5], acc_auc_median[5], acc_auc_percentile_l[5], acc_auc_percentile_r[5]	
 		
-	# Naively, we aggregate all the local class_0 probability scores in terms of the median.
+	# We have aggregated all the local class_0 probability scores in terms of the median.
 	# That is, each residue is represented only by one value, i.e., its median class_0 probability
-	# Soon, there will be a graph neuronal network processing 
-	scores = np.append(		
-							np.median(prob_class_0_tested, axis = 0)[np.arange(0, n_class_0, 1)], 
-							np.median(prob_class_0_tested, axis = 0)[np.arange(n_class_0, n_data, 1)]
-						)
-
+	# This is very simple and serves here as a proof of concept.
+	# More clever way to aggreate may be considered
+	
 	# plt.hist(scores[inds_class0_], alpha = 0.2, color = "r")
 	# plt.hist(scores[inds_class1_], alpha = 0.2, color = "b")
 	# plt.show()
@@ -2194,9 +2189,6 @@ def EnsembleLearning(	features,
 	inds_class0_ = np.arange(0, len(inds_class0), 1)
 	inds_class1_ = np.arange(len(inds_class0), len(inds_class0) + len(inds_class1), 1)	
 
-	# Tools.UMAP_cluster(np.array(data[0]), np.array(data[1]), inds_class_0_unseen, inds_class_1_unseen)
-	# exit()
-
 	# Count ..
 	n_class_0 = len(inds_class0)
 	n_class_1 = len(inds_class1)
@@ -2204,7 +2196,7 @@ def EnsembleLearning(	features,
 	ratio = n_class_0/n_data	
 		
 	print('\n The ratio of %s class instances to %s class instances is %.2f ' % (class_0, class_1, ratio))
-	print('\n Number of cases condiered:  %s ' % (n_data))
+	print('\n Number of cases considered:  %s ' % (n_data))
 	
 	# Initialize
 	scores = np.zeros((n_data, nrOfDataEntries))
