@@ -1131,7 +1131,7 @@ def MutationDistribution(mutationSubset, percenctInt = 25, PLOT_ENTROPY_LINE = F
 		
 		# Calculate coin-tossing probability
 		n_atoms = nrOfAtoms[i][0]
-		n_model = Tools.GeomModel(l, [A[i],a[i],l_i[i],nu[i]], modType[i]) * max(n_atoms)
+		n_model = Tools.GeomModel(l, [A[i],inv_zeta[i],l_i[i],nu[i]], modType[i]) * max(n_atoms)
 		# Define the coin tossing probability
 		# Model:
 		p_coin_model = n_model / (max(n_model)) 
@@ -1362,7 +1362,7 @@ def FeaturesExtraction(classes, classes_unseen, missclassified, jth_order, perce
 		l = scales[i]
 		# ind_l_i = np.argmin(abs(l - l_i[i]))
 		# ind_l_lag = np.argmin(abs(l - l_lag[i]))
-		curvature = Tools.GeomModel(l, [A[i],a[i],l_i[i],nu[i]], modType[i], der=2) / A[i]
+		curvature = Tools.GeomModel(l, [A[i],inv_zeta[i],l_i[i],nu[i]], modType[i], der=2) / A[i]
 		ind_max_curv = Tools.Match(max(curvature), curvature)[0]
 		pp = mol['porePoints'][i,:]
 		l_res = Tools.EuclNorm(mol['coords_res'], pp)
@@ -2553,7 +2553,7 @@ def InformationProfile(poreAxisLimits = ['min','max'], orderOfMom = 1, PLOT = Fa
 
 	# Modeling informatio	
 	A = Tools.GetColumn(statMod, [0, 0])	
-	a = Tools.GetColumn(statMod, [0, 2])
+	inv_zeta = Tools.GetColumn(statMod, [0, 2])
 	l_i = Tools.GetColumn(statMod, [0, 4])
 	lag = Tools.GetColumn(statMod, [0, 8])
 	asy = Tools.GetColumn(statMod, [0, 10])
@@ -2565,11 +2565,11 @@ def InformationProfile(poreAxisLimits = ['min','max'], orderOfMom = 1, PLOT = Fa
 	modType = Tools.GetColumn(statMod, [0, 15])
 	inds_gomp = np.where(modType == 3)[0]
 
-	invxi = nu*a 
-	invxi[inds_gomp] = a[inds_gomp]
+	invxi = nu*inv_zeta 
+	invxi[inds_gomp] = inv_zeta[inds_gomp]
 	xi = 1./invxi 
 	# introduce \zeta
-	zeta = 1/a
+	zeta = 1/inv_zeta
 	zeta[inds_gomp] =  1/float('inf')
 
 	data_n = []
@@ -2584,7 +2584,7 @@ def InformationProfile(poreAxisLimits = ['min','max'], orderOfMom = 1, PLOT = Fa
 	data_h_z_neg = []
 	data_h_z_IS = []
 	data_h_z_standard = []
-	data_phi_1 = []
+	data_phi_firstMom = []
 		
 	l_max = np.zeros(nrOfPps)
 	l_max_curv = np.zeros(nrOfPps)
@@ -2612,9 +2612,9 @@ def InformationProfile(poreAxisLimits = ['min','max'], orderOfMom = 1, PLOT = Fa
 
 		# nr of atoms and unit-mass-fractal dimension at l_i
 		n = nrOfAtoms[i][0]
-		n_model = Tools.GeomModel(l, [A[i],a[i],l_i[i],nu[i]], modType[i])*max(n)
-		fracDim_i[i] = Tools.GeomModel(l, [A[i],a[i],l_i[i],nu[i]], modType[i], der = 'log0')[ind_l_i]
-		fracDim_max[i] = max(Tools.GeomModel(l, [A[i],a[i],l_i[i],nu[i]], modType[i], der = 'log0'))
+		n_model = Tools.GeomModel(l, [A[i],inv_zeta[i],l_i[i],nu[i]], modType[i])*max(n)
+		fracDim_i[i] = Tools.GeomModel(l, [A[i],inv_zeta[i],l_i[i],nu[i]], modType[i], der = 'log0')[ind_l_i]
+		fracDim_max[i] = max(Tools.GeomModel(l, [A[i],inv_zeta[i],l_i[i],nu[i]], modType[i], der = 'log0'))
 
 		# l_* empirical
 		abs_diff = np.abs(n/max(n) - 0.5)
@@ -2627,7 +2627,7 @@ def InformationProfile(poreAxisLimits = ['min','max'], orderOfMom = 1, PLOT = Fa
 		p = n_norm / Z_p 
 
 		# curvature of n
-		curvature = Tools.GeomModel(l, [A[i],a[i],l_i[i],nu[i]], modType[i], der=2) / A[i]
+		curvature = Tools.GeomModel(l, [A[i],inv_zeta[i],l_i[i],nu[i]], modType[i], der=2) / A[i]
 		ind_max_curv = Tools.Match(max(curvature), curvature)[0]
 		ind_min_curv = Tools.Match(min(curvature), curvature)[0]
 		l_max_curv[i] = l[ind_max_curv]
@@ -2658,7 +2658,7 @@ def InformationProfile(poreAxisLimits = ['min','max'], orderOfMom = 1, PLOT = Fa
 		h_plus, h_minus = Tools.Decompose(h1_pho, h1_phi, ind_max_curv)
 
 		# Define phi (for j=1) for increasing l (log of comp susc)
-		phi_1 = np.log(abs(h_plus / h_minus))
+		phi_firstMom = np.log(abs(h_plus / h_minus))
 
 		# Exponential model fit on hydr energy magnitude
 		arg = l/xi[i]
@@ -2679,12 +2679,12 @@ def InformationProfile(poreAxisLimits = ['min','max'], orderOfMom = 1, PLOT = Fa
 		h_z_pho = Tools.getHydrMom(hydrMoments, i, 'phobic', orderOfMom, 'z') + ModelParameters.ZERO
 		h_z_phi = Tools.getHydrMom(hydrMoments, i, 'philic', orderOfMom, 'z') + ModelParameters.ZERO
 		
-		# Define eff susc and extract coarse-grained scaling exponents
-		susc = np.abs(h_z_phi/h_z_pho)
-		coeffs_PD, _ = np.polyfit(np.log(l[ind_max_curv:ind_l_i]), np.log(susc[ind_max_curv:ind_l_i]), deg=1, cov=True)
-		PC_PD = stats.pearsonr(np.log(susc[ind_max_curv:ind_l_i]), coeffs_PD[0]*np.log(l[ind_max_curv:ind_l_i]) + coeffs_PD[1])[0]
-		coeffs_VSDs, _ = np.polyfit(np.log(l[ind_l_i:ind_min_curv]), np.log(susc[ind_l_i:ind_min_curv]), deg=1, cov=True)
-		PC_VSDs = stats.pearsonr(np.log(susc[ind_l_i:ind_min_curv]), coeffs_VSDs[0]*np.log(l[ind_l_i:ind_min_curv]) + coeffs_VSDs[1])[0]		
+		# Define eff phi_ithMom_z and extract coarse-grained scaling exponents
+		phi_ithMom_z = np.abs(h_z_phi/h_z_pho)
+		coeffs_PD, _ = np.polyfit(np.log(l[ind_max_curv:ind_l_i]), np.log(phi_ithMom_z[ind_max_curv:ind_l_i]), deg=1, cov=True)
+		PC_PD = stats.pearsonr(np.log(phi_ithMom_z[ind_max_curv:ind_l_i]), coeffs_PD[0]*np.log(l[ind_max_curv:ind_l_i]) + coeffs_PD[1])[0]
+		coeffs_VSDs, _ = np.polyfit(np.log(l[ind_l_i:ind_min_curv]), np.log(phi_ithMom_z[ind_l_i:ind_min_curv]), deg=1, cov=True)
+		PC_VSDs = stats.pearsonr(np.log(phi_ithMom_z[ind_l_i:ind_min_curv]), coeffs_VSDs[0]*np.log(l[ind_l_i:ind_min_curv]) + coeffs_VSDs[1])[0]		
 
 		gamma_exp_PD[i] = coeffs_PD[0]
 		PC_gamma_exp_PD[i] = PC_PD
@@ -2713,7 +2713,7 @@ def InformationProfile(poreAxisLimits = ['min','max'], orderOfMom = 1, PLOT = Fa
 		data_m0_pho.append(m0_pho) 
 		data_m0_phi.append(m0_phi) 
 		data_expModel.append(expModel) 
-		data_phi_1.append(phi_1)
+		data_phi_firstMom.append(phi_firstMom)
 	
 
 	# get exponents different domains
@@ -2801,9 +2801,9 @@ def InformationProfile(poreAxisLimits = ['min','max'], orderOfMom = 1, PLOT = Fa
 	SummaryInfo.append(np.median(data_h_z_IS, axis=0))
 	
 	SummaryInfo.append([
-						np.median(data_phi_1, axis=0), 
-					 	np.min(data_phi_1, axis=0), 
-						np.max(data_phi_1, axis=0)
+						np.median(data_phi_firstMom, axis=0), 
+					 	np.min(data_phi_firstMom, axis=0), 
+						np.max(data_phi_firstMom, axis=0)
 						])
 
 	Tools.StoreFile(SummaryInfo, "SummaryInfo")

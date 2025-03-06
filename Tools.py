@@ -242,7 +242,7 @@ def StatModelParameters(x, y):
 	results.append([fit_gompertz.params['A'].value, 		fit_gompertz.params['A'].stderr, 		# A 					[0,1]
 					fit_gompertz.params['inv_xi'].value, 	fit_gompertz.params['inv_xi'].stderr, 	# a 					[2,3]
 					fit_gompertz.params['l_i'].value, 		fit_gompertz.params['l_i'].stderr, 		# l_i 					[4,5]						
-					ModelParameters.NU_MIN,					0,									    # nu					[6,7]
+					ModelParameters.ZERO,					0,									    # nu					[6,7]
 					add_params_gomp[0],						add_params_gomp[1], 				    # mu					[8,9]
 					add_params_gomp[2],						add_params_gomp[3],					    # tau					[10,11]	
 					add_params_gomp[4],						add_params_gomp[5],					    # l_lag					[12,13]
@@ -365,8 +365,12 @@ def CompareDistributions(sample1, sample2):
 '''
 ##	Intrapolate ##
 def Intrapolator(x,y,xx):
-	tck = splrep(x, y)
-	return BSpline(*tck)(xx)
+	tck = splrep(x, y, k=1)
+	yy = BSpline(*tck)(xx)
+	# cruel way to deal with edge effects (important only for small l):
+	if (min(xx) < min(x)):
+		yy[np.argmin(xx)] = y[np.argmin(x)]
+	return yy
 
 ##	Coarse derivative ##
 def CoarseDifferentiation(x, y, window):
@@ -1358,9 +1362,6 @@ def Plot_CumulativeAtomNumber(data_n, data_model, min_inds_l_i, max_inds_l_i, hi
 	
 	if (statsType != 'median' and statsType != 'mean_of_medians'):
 		exit('\n\n Exiting smoothly .. What kind of statitistical descriptor? \n\n')
-
-	label_y = r'$N$'
-	label_model_y = r'$n$'
 	
 	## Main figure
 	fig, ax = plt.subplots()
@@ -1379,6 +1380,8 @@ def Plot_CumulativeAtomNumber(data_n, data_model, min_inds_l_i, max_inds_l_i, hi
 	ax.plot(x, y_model, 'r--', alpha = 0.6, linewidth = 7)
 
 	from matplotlib.lines import Line2D 
+	label_y = r'$N$'
+	label_model_y = r'$n$'
 	legend_elements = 	[
 						
 						Line2D([0], [0], marker='o',  markeredgecolor='b', markerfacecolor='b', markersize=13, alpha=0.5, linestyle='', label=label_y),
@@ -1390,7 +1393,6 @@ def Plot_CumulativeAtomNumber(data_n, data_model, min_inds_l_i, max_inds_l_i, hi
 
 	offset_ylim = 250
 	ax.set_ylim([min(min(y), min(y_model)) - offset_ylim, max(max(y), max(y_model)) + offset_ylim])
-	ax.set_xlim([0, ModelParameters.N_SCALES + offset_xlim])
 	ax.legend(loc = 'upper left', handles=legend_elements, fontsize = 70) 
 	ax.set_title('Critical inflection regime', color = "m", fontsize = 60)
 	ax.set_xticks(xticks)
@@ -2207,4 +2209,11 @@ def Plot_MutationScores(class0_probs, resIDs, n_class0, n_class1, indsAppend_LoF
 	plt.show()
 
 
+"""
+		Standarize trace
+"""
+def Standarization(y, l_i, l):
+	ind_l_i = Match(l_i, l)
+	y_norm = y/y[ind_l_i]
+	return ( y_norm - min(y_norm) ) / ( max(y_norm) - min(y_norm) ) + min(abs(y_norm)) + ModelParameters.ZERO
 
