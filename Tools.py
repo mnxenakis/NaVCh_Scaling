@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 from uncertainties import ufloat
-from uncertainties.umath import *
+import uncertainties.umath as umath
 from scipy.signal import savgol_filter
 
 import os
@@ -844,7 +844,7 @@ def MachineLearner(X_train, y_train, X_test, y_test, method='LogReg', kernel=Non
         if kernel is not None:
             model = SVC(kernel=kernel, probability=True, class_weight='balanced', random_state=ModelParameters.CLASSIFIER_SEED)
         else:
-            exit('\n\n .. Exiting smoothly .. What kind of kernel? \n\n')
+            raise ValueError("SVC method requires a kernel to be specified")
 
     model.fit(X_train, y_train)
 
@@ -916,7 +916,7 @@ def KFoldsClassifier(X, y, X_other=[], X_unseen=[], y_unseen=[], method='LogReg'
     if ModelParameters.K > 1:
         folds = np.arange(2, ModelParameters.K + 1, 1)
     else:
-        exit('\n\n .. Exiting smoothly .. At least two folds are needed! \n\n')
+        raise ValueError("At least two folds are needed for cross-validation")
 
     for j in range(ModelParameters.NUM_OF_TRAININGS):
         for k in folds:
@@ -1132,7 +1132,7 @@ def qEntropy(p, q):
     if q != 1:
         return (1 - sum(np.array(p) ** q)) / (q - 1)
     else:
-        exit('\n\n Exiting smoothly .. q index cannot be unit! \n\n')
+        raise ValueError("q index cannot be equal to 1 in Tsallis entropy calculation")
 
 
 ## Exp func ##
@@ -1141,10 +1141,16 @@ def ExpFunc(x, a):
 
 
 ## Standardize ##
-def Standarization(y, l_i, l):
+def Standardization(y, l_i, l):
     ind_l_i = Match(l_i, l)
-    y_norm = y / y[ind_l_i]
-    return (y_norm - min(y_norm)) / (max(y_norm) - min(y_norm)) + min(abs(y_norm)) + ModelParameters.ZERO
+    normalization_value = y[ind_l_i]
+    if normalization_value == 0:
+        raise ValueError("Cannot standardize: normalization value at l_i is zero")
+    y_norm = y / normalization_value
+    y_range = max(y_norm) - min(y_norm)
+    if y_range == 0:
+        raise ValueError("Cannot standardize: y values have zero range")
+    return (y_norm - min(y_norm)) / y_range + min(abs(y_norm)) + ModelParameters.ZERO
 
 
 ## Calculate F1 Threshold via confusion_matrix ##
@@ -1200,8 +1206,8 @@ def Plot_CumulativeAtomNumber(data_n, data_model, min_inds_l_i, max_inds_l_i, hi
         y_sd = np.std(data_n, axis=0)
         y_model = np.mean(data_model, axis=0)
 
-    if statsType != 'median' and statsType != 'mean_of_medians':
-        exit('\n\n Exiting smoothly .. What kind of statitistical descriptor? \n\n')
+    if statsType not in ['median', 'mean_of_medians']:
+        raise ValueError(f"Unknown statistical descriptor: {statsType}. Expected 'median' or 'mean_of_medians'")
 
     fig, ax = plt.subplots()
     x = np.arange(ModelParameters.N_SCALES)
@@ -1292,8 +1298,8 @@ def Plot_AtomicHydropathicEnergy(data_m0, data_m0_pho, data_m0_phi, data_model, 
         y_sd_phi = np.std(data_m0_phi, axis=0)
         y_model = np.mean(data_model, axis=0)
 
-    if statsType != 'median' and statsType != 'mean_of_medians':
-        exit('\n\n Exiting smoothly .. What kind of statitistical descriptor? \n\n')
+    if statsType not in ['median', 'mean_of_medians']:
+        raise ValueError(f"Unknown statistical descriptor: {statsType}. Expected 'median' or 'mean_of_medians'")
 
     label_y = r'$| h_{0} | / N$'
     label_model_y = r'$\varepsilon$'
@@ -1385,8 +1391,8 @@ def Plot_DipoleMoment(data_z_pos, data_z_ES, data_z_neg, data_z_IS, min_inds_l_i
         y_IS = np.median(data_z_IS, axis=0)
         y_sd_neg = np.std(data_z_neg, axis=0)
 
-    if statsType != 'median' and statsType != 'mean_of_medians':
-        exit('\n\n Exiting smoothly .. What kind of statitistical descriptor? \n\n')
+    if statsType not in ['median', 'mean_of_medians']:
+        raise ValueError(f"Unknown statistical descriptor: {statsType}. Expected 'median' or 'mean_of_medians'")
 
     label_y_pos = r'$  h_{' + str(orderOfMom) + r',\perp, \uparrow} $'
     label_y_ES = r'$  h_{' + str(orderOfMom) + r',\perp}$ (ES)'

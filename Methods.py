@@ -2689,7 +2689,7 @@ def InformationProfile(poreAxisLimits = ['min','max'], orderOfMom = 1, PLOT = Fa
 		gamma_exp_VSDs[i] = coeffs_VSDs[0]
 		PC_gamma_exp_VSDs[i] = PC_VSDs
 
-		h_z_standarized = Tools.Standarization(h_z, l[ind_l_i], l)
+		h_z_standarized = Tools.Standardization(h_z, l[ind_l_i], l)
 		h_z_norm = h_z / abs(h_z[ind_l_i])
 
 		# Separate the positive from the negative branch
