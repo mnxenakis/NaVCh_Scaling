@@ -67,7 +67,7 @@ def HOLEOutputAnalysis():
 			p_coords = porePoints[:,ind_ppAxis] 
 			abs_diff = abs(p_coords - p_point)
 			ind = np.where(min(abs_diff) == abs_diff)
-			if (len(ind) != 1):												# there should be only one match .. 
+			if (len(ind[0]) != 1):												# there should be only one match .. 
 				exit('\n .. Exiting smoothly .. No match .. \n')
 			else:
 				porePoints_ordered[j,:] = np.round(porePoints[ind,:], ModelParameters.ROUND_DIGIT_PP) # round
@@ -301,7 +301,7 @@ def PDBStructurePreperation():
 						ind_atom = np.where(hydroChar_ind == perms[i])[0]
 						if (len(ind_atom) != 0):
 							break
-					noise = np.random.normal(0, ModelParameters.STD_NOISE, 1)
+					noise = float(np.random.normal(0, ModelParameters.STD_NOISE, 1))
 					if (len(ind_atom) == 0): 
 						print('\n\n Warning! Atom could not be mapped on the KR scale: ', atom_name, res_name, hydroChar_val[ind_atom], file = f)
 						# print('\n\n Warning! Atom (%s,%s,%f) could not be mapped on the KR scale \n\n' % (atom_name, res_name, hydroChar_val[ind_atom]), file = f)
@@ -609,7 +609,7 @@ def InsertVariants():
 									domainBoundaries['Domain_III_ResID'] = res_id
 									domainBoundaries['Domain_III_Index'] = i
 									# print(res_id, i)	
-								if (nrOfDomains == 3):
+								if (nrOfDomains == 4):
 									domainBoundaries['Domain_IV_ResID'] = res_id
 									domainBoundaries['Domain_IV_Index'] = i
 									# print(res_id, i)	
@@ -1100,7 +1100,7 @@ def MutationDistribution(mutationSubset, percenctInt = 25, PLOT_ENTROPY_LINE = F
 	## Get geom model parameters
 	statMod = Tools.LoadFile('statMod')
 	A = Tools.GetColumn(statMod, [0, 0])	
-	a = Tools.GetColumn(statMod, [0, 2])
+	inv_zeta = Tools.GetColumn(statMod, [0, 2])
 	l_i = Tools.GetColumn(statMod, [0, 4])
 	nu 	= Tools.GetColumn(statMod, [0, 6])	
 	modType = Tools.GetColumn(statMod, [0, 15])
@@ -1135,11 +1135,13 @@ def MutationDistribution(mutationSubset, percenctInt = 25, PLOT_ENTROPY_LINE = F
 		# Define the coin tossing probability
 		# Model:
 		p_coin_model = n_model / (max(n_model)) 
-		l_i_b[i] = n_model / (A[i] * max(n_atoms))
+		p_coin_model_K = n_model / (A[i] * max(n_atoms))
 		p_coin_empirical = n_atoms / (max(n_atoms)) 
 		absDiff_model_half_model = abs(p_coin_model - 0.5)
+		absDiff_model_half_model_K = abs(p_coin_model_K - 0.5)
 		absDiff_model_half_empirical = abs(p_coin_empirical - 0.5)
 		l_half_model[i] = l[np.where(absDiff_model_half_model == min(absDiff_model_half_model))[0][0]] 
+		l_i_b[i] = l[np.where(absDiff_model_half_model_K == min(absDiff_model_half_model_K))[0][0]] 
 		l_half_empirical[i] = l[np.where(absDiff_model_half_empirical == min(absDiff_model_half_empirical))[0][0]] 
 		dist_l_i = l_res - l_i[i] 
 		dist_l_i_b = l_res - l_i_b[i] 
@@ -1258,7 +1260,7 @@ def FeaturesExtraction(classes, classes_unseen, missclassified, jth_order, perce
 	statMod = Tools.LoadFile('statMod')
 	l_i = Tools.GetColumn(statMod, [0, 4])	
 	A = Tools.GetColumn(statMod, [0, 0])
-	a = Tools.GetColumn(statMod, [0, 2])
+	inv_zeta = Tools.GetColumn(statMod, [0, 2])
 	l_i = Tools.GetColumn(statMod, [0, 4])
 	modType = Tools.GetColumn(statMod, [0, 15])
 	# calculate \xi (we need to set the size of the sliding window)
@@ -1426,7 +1428,7 @@ def FeaturesExtraction(classes, classes_unseen, missclassified, jth_order, perce
 		# about the underlying wave packet.
 		# Higher order derivatiges of phi_mut are welcome. However, it is increasingly difficult to 
 		# compute a smooth, yet, informative derivative with increasing order.
-		slidingWindow = int( ModelParameters.WINDOW_FAC * Tools.GetSlidingWindow(a[i], nu[i], modType[i]) )
+		slidingWindow = int( ModelParameters.WINDOW_FAC * Tools.GetSlidingWindow(inv_zeta[i], nu[i], modType[i]) )
 		derPhi_mut = Tools.RadialProfile(l, phi, slidingWindow, l_mut, 1)
 		pertPot_mut = derPhi_mut / phi_mut
 		
@@ -1680,8 +1682,8 @@ def FeaturesSummary(even_order, odd_order, classes = 'classes', unseen = 'unseen
 		rightPerc_odd_class1_phi.append(Tools.LoadFile(fn)[14])
 		
 		medians_odd_class1_derPhi.append(Tools.LoadFile(fn)[15])
-		leftPerc_odd_class1_derPhi.append(Tools.LoadFile(fn)[15])
-		rightPerc_odd_class1_derPhi.append(Tools.LoadFile(fn)[15])
+		leftPerc_odd_class1_derPhi.append(Tools.LoadFile(fn)[16])
+		rightPerc_odd_class1_derPhi.append(Tools.LoadFile(fn)[17])
 		
 		medians_odd_class1_pertPot.append(Tools.LoadFile(fn)[18])
 		medians_odd_class1_absPertPot.append(Tools.LoadFile(fn)[21])
@@ -2069,12 +2071,8 @@ def PorePointLearning(features, class_0, class_1, fn_score, BALANCING = False, m
 	# This is very simple and serves here as a proof of concept.
 	# More clever way to aggreate may be considered
 	
-	# plt.hist(scores[inds_class0_], alpha = 0.2, color = "r")
-	# plt.hist(scores[inds_class1_], alpha = 0.2, color = "b")
-	# plt.show()
-	
 	## Store
-	Tools.StoreFile(scores, fn_score[0] +  '_scores')	
+	Tools.StoreFile(prob_class_0_tested, fn_score[0] + '_scores')
 	Tools.StoreFile(auc_train, fn_score[0] + '_auc_train')
 	Tools.StoreFile(f1_train, fn_score[0] + '_f1_train')
 	Tools.StoreFile(auc_test, fn_score[0] + '_auc_test')
@@ -2450,7 +2448,7 @@ def CollectObservables():
 			nrOfAtoms.append([N, N_pho, N_phi])  
 			# Get the probabilities
 			# Note that sum(p_unnorm) is the partition sum: p = p_unnorm/sum(p_unnorm) = (n/K)/(sum(n)/K) = n/sum(n)
-			p_unnorm = Tools.GeomModel(l, [   _['K'] ,    _['inv_zeta'] ,    _['l_i'] ,    _['nu'] ],    _["modType"] ) /  _['K'] 
+			p_unnorm = Tools.GeomModel(l, [   _['A'] ,    _['inv_zeta'] ,    _['l_i'] ,    _['nu'] ],    _["modType"] ) /  _['A'] 
 			p_pho_unnorm = Tools.GeomModel(l, [_pho['K'] , _pho['inv_zeta'] , _pho['l_i'] , _pho['nu'] ], _pho["modType"] ) / _pho['K']
 			p_phi_unnorm = Tools.GeomModel(l, [_phi['K'] , _phi['inv_zeta'] , _phi['l_i'] , _phi['nu'] ], _phi["modType"] ) / _phi['K']
 			# Radial order entropies
@@ -2458,12 +2456,12 @@ def CollectObservables():
 			S_pho = Tools.qEntropy(p_pho_unnorm/sum(p_pho_unnorm), _pho['nu'] + 1)
 			S_phi = Tools.qEntropy(p_phi_unnorm/sum(p_phi_unnorm), _phi['nu'] + 1)
 			# Curvature (and corrsponding domains)
-			curvature = Tools.GeomModel(l, [_['K'] , _['inv_zeta'] , _['l_i'] , _['nu'] ], _["modType"], 2) / _['K']
+			curvature = Tools.GeomModel(l, [_['A'] , _['inv_zeta'] , _['l_i'] , _['nu'] ], _["modType"], 2) / _['A']
 			ind_max_curv = Tools.Match(max(curvature), curvature)[0]
 			ind_min_curv = Tools.Match(min(curvature), curvature)[0]
 			# Cumulative probabilities (roughly determine the "phase" (i.e., PD vs VS) to which an atom belongs)
-			p_res = Tools.GeomModel(l_res,  [_['K'] , _['inv_zeta'] , _['l_i'] , _['nu'] ], _["modType"] ) / _['K']
-			p_atom = Tools.GeomModel(l_atom, [_['K'] , _['inv_zeta'] , _['l_i'] , _['nu'] ], _["modType"] ) / _['K']
+			p_res = Tools.GeomModel(l_res,  [_['A'] , _['inv_zeta'] , _['l_i'] , _['nu'] ], _["modType"] ) / _['A']
+			p_atom = Tools.GeomModel(l_atom, [_['A'] , _['inv_zeta'] , _['l_i'] , _['nu'] ], _["modType"] ) / _['A']
 		
 		else:
 			exit('\n .. Exiting smoothly .. Some atoms were NOT sampled! \n\n')
@@ -2691,7 +2689,7 @@ def InformationProfile(poreAxisLimits = ['min','max'], orderOfMom = 1, PLOT = Fa
 		gamma_exp_VSDs[i] = coeffs_VSDs[0]
 		PC_gamma_exp_VSDs[i] = PC_VSDs
 
-		h_z_standarized = Tools.Standarization(h_z, l, ind_l_i)
+		h_z_standarized = Tools.Standarization(h_z, l[ind_l_i], l)
 		h_z_norm = h_z / abs(h_z[ind_l_i])
 
 		# Separate the positive from the negative branch
@@ -2821,7 +2819,7 @@ def Summary(subtype = [], poreAxisLimits = ['min', 'max'], orderOfMom = 1):
 	files = os.listdir(current_directory)
 
 	# Filter files to include only those ending with '.txt'
-	summaryFiles = [file for file in files if file.endswith('.txt')]
+	summaryFiles = [file for file in files if file.endswith('SummaryInfo')]
 
 	# Count the number of .txt files
 	nrOfSummaryFiles = len(summaryFiles)
