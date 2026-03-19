@@ -1,38 +1,42 @@
 # Voltage-gated Sodium Channel Protein Molecule Scaling and Mutational Robustness Analysis
 
-
-
-# Preperation
+## Preparation
 
 Welcome to the voltage-gated sodium channels (NaVChs) scaling analysis project!
 
-Step 1. To begin, create a directory in your home directory by executing the following command in a terminal:
+**Step 1.** To begin, create a directory in your home directory by executing the following command in a terminal:
 
-	mkdir ~/hydroscale
+```bash
+mkdir ~/hydroscale
+```
 
-This creates the directory /home/xxx/hydroscale, where xxx is your username.
+This creates the directory `/home/xxx/hydroscale`, where `xxx` is your username.
 
-Step 2. Place the following files in the newly created hydroscale directory:
+**Step 2.** Place the following files in the newly created hydroscale directory:
 
-    Methods.py 			# a collection of useful methods
-    Tools.py 			# a collection of useful tools
-    reduce.rad 			# vdW atomic radii (for the HOLE routine)
-    ModelParameters.py 		# physical parameters and numerical constants
-    KapchaRosskyScale.py 	# the Kapcha & Rossky hydropathic scale (Kapcha LH & Rossky PJ, J Mol Biol., 2014, 426(2):484-9)
+- `Methods.py` - a collection of useful methods
+- `Tools.py` - a collection of useful tools  
+- `reduce.rad` - vdW atomic radii (for the HOLE routine)
+- `ModelParameters.py` - physical parameters and numerical constants
+- `KapchaRosskyScale.py` - the Kapcha & Rossky hydropathic scale (Kapcha LH & Rossky PJ, J Mol Biol., 2014, 426(2):484-9)
 
-You can use the mv or cp command to move or copy these files into /home/xxx/hydroscale:
+You can use the `mv` or `cp` command to move or copy these files into `/home/xxx/hydroscale`:
 
-	mv Methods.py ModelParameters.py KapchaRosskyScale.py Tools.py reduce.rad ~/hydroscale/
+```bash
+mv Methods.py ModelParameters.py KapchaRosskyScale.py Tools.py reduce.rad ~/hydroscale/
+```
 
-Step 3. Download a PDB file (Protein Data Bank file) of interest. 
+**Step 3.** Download a PDB file (Protein Data Bank file) of interest. 
 
 Create a directory named after the PDB code: 
 
-	mkdir -p ~/NaVCh_ScalingAnalysis/NaVAb/3rvy
+```bash
+mkdir -p ~/NaVCh_ScalingAnalysis/NaVAb/3rvy
+```
     
-This ensures that PDB-related files are stored in the NaVCh_ScalingAnalysis directory instead of hydroscale. To exemplify, we use here the 3rvy PDB code corresponding to a prototype bacterial NaVCh, namely, the NaVAb protein molecule captured at a pre-open state (https://www.wwpdb.org/pdb?id=pdb_00003rvy)
+This ensures that PDB-related files are stored in the `NaVCh_ScalingAnalysis` directory instead of `hydroscale`. To exemplify, we use here the `3rvy` PDB code corresponding to a prototype bacterial NaVCh, namely, the NaVAb protein molecule captured at a pre-open state (https://www.wwpdb.org/pdb?id=pdb_00003rvy)
 
-Step 4. To proceed with the full analysis cycle, you will need to perform the following procedures: 
+**Step 4.** To proceed with the full analysis cycle, you will need to perform the following procedures: 
 - "Clean" the PDB file (remove waters, toxins, HETATM, and other non-standard atoms)
 - Protonate the structure (add hydrogens)
 - Align the principal pore axis of the structure with the z-axis
@@ -43,107 +47,120 @@ Protonation of the "clean" structure is performed by the reduce software (https:
 
 For the 3rvy molecule, we use the reduce command: 
 
-    reduce -noadj 3rvy_clean.pdb > 3rvy_clean_H.pdb
+```bash
+reduce -noadj 3rvy_clean.pdb > 3rvy_clean_H.pdb
+```
 
 For any other molecule, we use the reduce command:
 
-    reduce -BUILD -NOHETh 3rvy_clean.pdb > 3rvy_clean_H.pdb 
+```bash
+reduce -BUILD -NOHETh 3rvy_clean.pdb > 3rvy_clean_H.pdb 
+```
 
 To align the principal pore axis of the structure with the z-axis we use the VMD software (https://www.ks.uiuc.edu/Research/vmd/).
-Ensure the Orient package is available in your VMD installation. Utilize the following .tcl script:
-    
-    package require Orient
-    namespace import Orient::orient
+Ensure the Orient package is available in your VMD installation. Utilize the following `.tcl` script:
 
-    # Load the cleaned and protonated .pdb file
-    mol load pdb 3rvy_clean_H.pdb
+```tcl
+package require Orient
+namespace import Orient::orient
 
-    # Select all atoms
-    set sel [atomselect top "all"]
+# Load the cleaned and protonated .pdb file
+mol load pdb 3rvy_clean_H.pdb
 
-    # Calculate the principal axes
-    set I [draw principalaxes $sel]
+# Select all atoms
+set sel [atomselect top "all"]
 
-    # Align the principal axis to the z-axis
-    set A [orient $sel [lindex $I 2] {0 0 1}]
-    
-    # Save the aligned structure
-    set sel [atomselect top "all"]
-    $sel writepdb 3rvy_clean_H_ori.pdb 
-    
-    # Save the geom center of the structure in the geom_center.dat file
-    # We need the mol center of the clean, protonated, and oriented structure to initiate the HOLE routine
-    set file [open "geom_center.dat" w]
-    puts $file [ geom_center $sel ] 
-    close $file
-    quit
+# Calculate the principal axes
+set I [draw principalaxes $sel]
 
-Save the script as align.tcl (or a name of your choice).
+# Align the principal axis to the z-axis
+set A [orient $sel [lindex $I 2] {0 0 1}]
+
+# Save the aligned structure
+set sel [atomselect top "all"]
+$sel writepdb 3rvy_clean_H_ori.pdb 
+
+# Save the geom center of the structure in the geom_center.dat file
+# We need the mol center of the clean, protonated, and oriented structure to initiate the HOLE routine
+set file [open "geom_center.dat" w]
+puts $file [ geom_center $sel ] 
+close $file
+quit
+```
+
+Save the script as `align.tcl` (or a name of your choice).
 Run it in VMD with the following command:
 
-    vmd -dispdev text 3rvy_clean_H.pdb < align.tcl
+```bash
+vmd -dispdev text 3rvy_clean_H.pdb < align.tcl
+```
 
-Step 5. We renumber the residue entries in the PDB file, ensuring they follow a sequential and consistent order. This is done by utilizing the pdb tool (http://www.bonvinlab.org/pdb-tools/) command:
+**Step 5.** We renumber the residue entries in the PDB file, ensuring they follow a sequential and consistent order. This is done by utilizing the pdb tool (http://www.bonvinlab.org/pdb-tools/) command:
 
-    pdb_reres -1 3rvy_clean_H_ori.pdb > 3rvy_clean_H_ori_renum.pdb 
+```bash
+pdb_reres -1 3rvy_clean_H_ori.pdb > 3rvy_clean_H_ori_renum.pdb 
+```
 
-Step 6. Navigate through the NaVCh pore environment. We use the HOLE software (https://www.holeprogram.org/).
-We call the HOLE rountine $N_{\text{HOLE}} = 50$ times. We use the following script to change the HOLE seed and extract pore radius results:
+**Step 6.** Navigate through the NaVCh pore environment. We use the HOLE software (https://www.holeprogram.org/).
+We call the HOLE routine $N_{\text{HOLE}} = 50$ times. We use the following script to change the HOLE seed and extract pore radius results:
 
-    #!/bin/bash
+```bash
+#!/bin/bash
 
-    # Number of runs (e.g., N_HOLE = 50)
-    n=50             
-    # Initial seed value
-    seed=1000        
-    # Seed increment between runs
-    incr_seed=1000   
+# Number of runs (e.g., N_HOLE = 50)
+n=50             
+# Initial seed value
+seed=1000        
+# Seed increment between runs
+incr_seed=1000   
 
-    # Loop for the number of runs
-    for (( i=0; i<$n; i++ )); do
+# Loop for the number of runs
+for (( i=0; i<$n; i++ )); do
 
-        # Print message about the current run and seed
-        echo "Calling HOLE for the $i-th time with seed $seed, which will be incremented to $((seed+incr_seed))"
-    
-        # Run HOLE program and save output to hole_out.txt
-        echo "Run HOLE"
-        hole < hole.inp > hole_out.txt 
+    # Print message about the current run and seed
+    echo "Calling HOLE for the $i-th time with seed $seed, which will be incremented to $((seed+incr_seed))"
 
-        # Insert space between numbers in the output for easier parsing
-        printf "%s\n" "${string}" | sed 's/-/ -/g' hole_out.txt > hole_out_spaced.txt
+    # Run HOLE program and save output to hole_out.txt
+    echo "Run HOLE"
+    hole < hole.inp > hole_out.txt 
 
-        # Extract lines containing "mid-" or "sampled" and save to poreRadius.tsv
-        egrep "mid-|sampled" hole_out_spaced.txt > poreRadius.tsv 
+    # Insert space between numbers in the output for easier parsing
+    printf "%s\n" "${string}" | sed 's/-/ -/g' hole_out.txt > hole_out_spaced.txt
 
-        # Format the poreRadius.tsv file and save it to ppr_$i.dat
-        cat poreRadius.tsv | awk '{print $1,$2}' > ppr_$i.dat 
+    # Extract lines containing "mid-" or "sampled" and save to poreRadius.tsv
+    egrep "mid-|sampled" hole_out_spaced.txt > poreRadius.tsv 
 
-        # Extract the highest radius point found and save to porePoints.dat
-        sed -n '/ highest radius point found:/{n;p;}' hole_out_spaced.txt > porePoints.dat
+    # Format the poreRadius.tsv file and save it to ppr_$i.dat
+    cat poreRadius.tsv | awk '{print $1,$2}' > ppr_$i.dat 
 
-        # Clean up the porePoints.dat file by removing the first two columns and save it as pp_$i.dat
-        awk '{ $1=""; $2=""; print $0}' porePoints.dat > pp_$i.dat 
+    # Extract the highest radius point found and save to porePoints.dat
+    sed -n '/ highest radius point found:/{n;p;}' hole_out_spaced.txt > porePoints.dat
 
-        # Remove the temporary porePoints.dat file
-        rm porePoints.dat
+    # Clean up the porePoints.dat file by removing the first two columns and save it as pp_$i.dat
+    awk '{ $1=""; $2=""; print $0}' porePoints.dat > pp_$i.dat 
 
-        # Update the seed in hole.inp by replacing the old seed with the incremented seed
-        sed -i 's/RASEED '$seed'/RASEED '$((seed+incr_seed))'/g' hole.inp
+    # Remove the temporary porePoints.dat file
+    rm porePoints.dat
 
-        # Increment the seed for the next run
-        ((seed=seed+incr_seed))
+    # Update the seed in hole.inp by replacing the old seed with the incremented seed
+    sed -i 's/RASEED '$seed'/RASEED '$((seed+incr_seed))'/g' hole.inp
 
-    done
+    # Increment the seed for the next run
+    ((seed=seed+incr_seed))
 
-    # After all runs, reset the seed in hole.inp back to the initial value (1000)
-    sed -i 's/RASEED '$seed'/RASEED '1000'/g' hole.inp
+done
 
-    # Return to the original directory
-    cd -
+# After all runs, reset the seed in hole.inp back to the initial value (1000)
+sed -i 's/RASEED '$seed'/RASEED '1000'/g' hole.inp
 
-Step 7. Finally, we organize the generated data. In the current subdirectory, we execute the following commands:
+# Return to the original directory
+cd -
+```
 
-    # Create a directory to save results
+**Step 7.** Finally, we organize the generated data. In the current subdirectory, we execute the following commands:
+
+```bash
+# Create a directory to save results
     mkdir 3rvy_prad 
 
     # Move all ppr_$i.dat files (generated by HOLE) to the newly created directory
@@ -160,43 +177,64 @@ This step ensures the results are neatly stored in a dedicated directory and rem
 
 # Single Voltage-gated Sodium Channel Protein Molecule Scaling Analysis
 
-Now we are prepared to execute the `main_scaling.py` function locally, i.e., within the `3rvy` directory:
+Now we are prepared to execute the `main_scaling.py` function locally, i.e., within the `3rvy` directory. The improved script includes proper error handling and progress feedback:
 
-	"""
-	This is your main function for Scaling Analysis.
- 
- 	It essentially orchestrates and executes all necessary tasks locally. 
-	It assumes you are working within the <PDB_code> directory and utilizes imported methods to process the data.
-	"""
+```python
+"""
+This is your main function for Scaling Analysis.
 
-	import os
+It essentially orchestrates and executes all necessary tasks locally. 
+It assumes you are working within the <PDB_code> directory and utilizes imported methods to process the data.
+"""
 
-	# Get the PDB code from the current directory name
-	pdb_code = os.getcwd()[-4:]
-	print("\n\n.. Starting working with molecule:", pdb_code, "found in: \n", os.getcwd())
-	
-	import sys
+import os
+import sys
+import time
 
-	# Add the hydroscale directory to the system path for module imports
-	sys.path.insert(1, '/home/xxx/hydroscale')
+# Get the PDB code from the current directory name
+pdb_code = os.getcwd()[-4:]
+print(f"\n\n.. Starting working with molecule: {pdb_code}")
+print(f"Working directory: {os.getcwd()}")
 
-	import time
-	import Methods
+# Add the hydroscale directory to the system path for module imports
+# Note: Update the path below to match your actual hydroscale directory
+hydroscale_path = '/home/xxx/hydroscale'  # TODO: Update this path
+sys.path.insert(0, hydroscale_path)
 
-	# Record the start time for performance measurement
-	start_time = time.time()
-
-	# Call the sequence of methods required for the analysis
-	Methods.HOLEOutputAnalysis()       # Analyze the output of HOLE
-	Methods.PDBStructurePreperation()  # Prepare the PDB structure
-	Methods.CollectObservables()       # Collect observables for the analysis
-	Methods.InformationProfile()       # Generate the information profile
-
-	# Display the elapsed time for the full process
-	print("--- %s seconds ---" % (time.time() - start_time))
-
-	# Exit the program
-	exit()
+try:
+    import Methods
+    
+    # Record the start time for performance measurement
+    start_time = time.time()
+    
+    print("Starting analysis pipeline...")
+    
+    # Call the sequence of methods required for the analysis
+    print("1. Analyzing HOLE output...")
+    Methods.HOLEOutputAnalysis()       # Analyze the output of HOLE
+    
+    print("2. Preparing PDB structure...")
+    Methods.PDBStructurePreperation()  # Prepare the PDB structure
+    
+    print("3. Collecting observables...")
+    Methods.CollectObservables()       # Collect observables for the analysis
+    
+    print("4. Generating information profile...")
+    Methods.InformationProfile()       # Generate the information profile
+    
+    # Display the elapsed time for the full process
+    elapsed_time = time.time() - start_time
+    print(f"\n✓ Analysis completed successfully!")
+    print(f"Total elapsed time: {elapsed_time:.2f} seconds")
+    
+except ImportError as e:
+    print(f"Error: Could not import Methods module. Please check the hydroscale path: {hydroscale_path}")
+    print(f"ImportError: {e}")
+    sys.exit(1)
+except Exception as e:
+    print(f"Error during analysis: {e}")
+    sys.exit(1)
+```
 
 
 Once the program has exit, the following files have appeared in the `3rvy` directory:

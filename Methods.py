@@ -2449,8 +2449,8 @@ def CollectObservables():
 			# Get the probabilities
 			# Note that sum(p_unnorm) is the partition sum: p = p_unnorm/sum(p_unnorm) = (n/K)/(sum(n)/K) = n/sum(n)
 			p_unnorm = Tools.GeomModel(l, [   _['A'] ,    _['inv_zeta'] ,    _['l_i'] ,    _['nu'] ],    _["modType"] ) /  _['A'] 
-			p_pho_unnorm = Tools.GeomModel(l, [_pho['A'] , _pho['inv_zeta'] , _pho['l_i'] , _pho['nu'] ], _pho["modType"] ) / _pho['K']
-			p_phi_unnorm = Tools.GeomModel(l, [_phi['A'] , _phi['inv_zeta'] , _phi['l_i'] , _phi['nu'] ], _phi["modType"] ) / _phi['K']
+			p_pho_unnorm = Tools.GeomModel(l, [_pho['A'] , _pho['inv_zeta'] , _pho['l_i'] , _pho['nu'] ], _pho["modType"] ) / _pho['A']
+			p_phi_unnorm = Tools.GeomModel(l, [_phi['A'] , _phi['inv_zeta'] , _phi['l_i'] , _phi['nu'] ], _phi["modType"] ) / _phi['A']
 			# Radial order entropies
 			S = Tools.qEntropy(p_unnorm/sum(p_unnorm), _['nu'] + 1)
 			S_pho = Tools.qEntropy(p_pho_unnorm/sum(p_pho_unnorm), _pho['nu'] + 1)
