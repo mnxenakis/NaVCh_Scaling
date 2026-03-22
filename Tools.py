@@ -438,29 +438,28 @@ def Match(val, vec):
 '''
         Hydr moms 
 '''
-## Odd-order hydr mom ##
-def OddOrderHydrMom(vecs, hvals, order):
-
+def OddOrderHydrMom(vecs, hvals, orders):
+    
     data = []
-    for i in order:
-        if i == 1:
-            data.append(np.sum(vecs * hvals[:, np.newaxis], axis=0))
+    r = np.linalg.norm(vecs, axis=1)
+    for m in orders:
+        if m == 1:
+            data.append(np.sum(vecs * hvals[:, None], axis=0))
         else:
-            data.append(np.sum(vecs * np.sum(vecs ** i, axis=1)[:, np.newaxis] * hvals[:, np.newaxis], axis=0))
-
+            data.append(np.sum((r**(m-1))[:, None] * vecs * hvals[:, None], axis=0))
+    
     return np.asarray(data)
 
-
-##  Even-order hydr mom ##
-def EvenOrderHydrMom(vecs, hvals, order):
-
+def EvenOrderHydrMom(vecs, hvals, orders):
+    
     data = []
-    for i in order:
-        if i == 0:
-            data.append(sum(hvals))
+    r = np.linalg.norm(vecs, axis=1)
+    for m in orders:
+        if m == 0:
+            data.append(np.sum(hvals))
         else:
-            data.append(np.sum(np.sum(vecs ** i, axis=1) * hvals))
-
+            data.append(np.sum((r**m) * hvals))
+    
     return np.asarray(data)
 
 
